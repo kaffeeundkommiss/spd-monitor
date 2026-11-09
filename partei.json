@@ -1,0 +1,404 @@
+{
+  "stand": "2026-11-09",
+  "vorsitz_titel": "Amtszeiten seit 1946",
+  "wahlen": [
+    {
+      "jahr": 1998,
+      "datum": "1998-09-27",
+      "ergebnis": 40.9,
+      "sitze": 298,
+      "rolle": "Regierung",
+      "vorsitz": "Oskar Lafontaine"
+    },
+    {
+      "jahr": 2002,
+      "datum": "2002-09-22",
+      "ergebnis": 38.5,
+      "sitze": 251,
+      "rolle": "Regierung",
+      "vorsitz": "Gerhard Schröder"
+    },
+    {
+      "jahr": 2005,
+      "datum": "2005-09-18",
+      "ergebnis": 34.2,
+      "sitze": 222,
+      "rolle": "Regierung",
+      "vorsitz": "Franz Müntefering"
+    },
+    {
+      "jahr": 2009,
+      "datum": "2009-09-27",
+      "ergebnis": 23.0,
+      "sitze": 146,
+      "rolle": "Opposition",
+      "vorsitz": "Franz Müntefering"
+    },
+    {
+      "jahr": 2013,
+      "datum": "2013-09-22",
+      "ergebnis": 25.7,
+      "sitze": 193,
+      "rolle": "Regierung",
+      "vorsitz": "Sigmar Gabriel"
+    },
+    {
+      "jahr": 2017,
+      "datum": "2017-09-24",
+      "ergebnis": 20.5,
+      "sitze": 153,
+      "rolle": "Regierung",
+      "vorsitz": "Martin Schulz"
+    },
+    {
+      "jahr": 2021,
+      "datum": "2021-09-26",
+      "ergebnis": 25.7,
+      "sitze": 206,
+      "rolle": "Regierung",
+      "vorsitz": "Saskia Esken / Norbert Walter-Borjans"
+    },
+    {
+      "jahr": 2025,
+      "datum": "2025-02-23",
+      "ergebnis": 16.4,
+      "sitze": 120,
+      "rolle": "Regierung",
+      "vorsitz": "Saskia Esken / Lars Klingbeil"
+    }
+  ],
+  "vorsitzende": [
+    {
+      "nr": 1,
+      "name": "Kurt Schumacher",
+      "beginn": "1946-05-11",
+      "ende": "1952-08-20"
+    },
+    {
+      "nr": 2,
+      "name": "Erich Ollenhauer",
+      "beginn": "1952-09-27",
+      "ende": "1963-12-14"
+    },
+    {
+      "nr": 3,
+      "name": "Willy Brandt",
+      "beginn": "1964-02-16",
+      "ende": "1987-06-14"
+    },
+    {
+      "nr": 4,
+      "name": "Hans-Jochen Vogel",
+      "beginn": "1987-06-14",
+      "ende": "1991-05-29"
+    },
+    {
+      "nr": 5,
+      "name": "Björn Engholm",
+      "beginn": "1991-05-29",
+      "ende": "1993-05-05"
+    },
+    {
+      "nr": 6,
+      "name": "Rudolf Scharping",
+      "beginn": "1993-06-25",
+      "ende": "1995-11-16"
+    },
+    {
+      "nr": 7,
+      "name": "Oskar Lafontaine",
+      "beginn": "1995-11-16",
+      "ende": "1999-03-12"
+    },
+    {
+      "nr": 8,
+      "name": "Gerhard Schröder",
+      "beginn": "1999-03-12",
+      "ende": "2004-03-21"
+    },
+    {
+      "nr": 9,
+      "name": "Franz Müntefering",
+      "beginn": "2004-03-21",
+      "ende": "2005-11-15"
+    },
+    {
+      "nr": 10,
+      "name": "Matthias Platzeck",
+      "beginn": "2005-11-15",
+      "ende": "2006-04-10"
+    },
+    {
+      "nr": 11,
+      "name": "Kurt Beck",
+      "beginn": "2006-04-10",
+      "ende": "2008-09-07"
+    },
+    {
+      "nr": 12,
+      "name": "Franz Müntefering",
+      "beginn": "2008-10-18",
+      "ende": "2009-11-13"
+    },
+    {
+      "nr": 13,
+      "name": "Sigmar Gabriel",
+      "beginn": "2009-11-13",
+      "ende": "2017-03-19"
+    },
+    {
+      "nr": 14,
+      "name": "Martin Schulz",
+      "beginn": "2017-03-19",
+      "ende": "2018-02-13"
+    },
+    {
+      "nr": 15,
+      "name": "Andrea Nahles",
+      "beginn": "2018-04-22",
+      "ende": "2019-06-03"
+    },
+    {
+      "nr": 16,
+      "name": "Saskia Esken / Norbert Walter-Borjans",
+      "beginn": "2019-12-06",
+      "ende": "2021-12-11"
+    },
+    {
+      "nr": 17,
+      "name": "Saskia Esken / Lars Klingbeil",
+      "beginn": "2021-12-11",
+      "ende": "2025-06-27"
+    },
+    {
+      "nr": 18,
+      "name": "Lars Klingbeil / Bärbel Bas",
+      "beginn": "2025-06-27",
+      "ende": "2026-10-12"
+    },
+    {
+      "nr": 19,
+      "name": "Lars Klingbeil",
+      "beginn": "2026-10-12",
+      "ende": null
+    }
+  ],
+  "zeitleiste": [
+    {
+      "spur": "Vorsitz",
+      "label": "Lafontaine",
+      "von": "1995-11-16",
+      "bis": "1999-03-12",
+      "status": "abgeschlossen"
+    },
+    {
+      "spur": "Vorsitz",
+      "label": "Schröder",
+      "von": "1999-03-12",
+      "bis": "2004-03-21",
+      "status": "abgeschlossen"
+    },
+    {
+      "spur": "Vorsitz",
+      "label": "Müntefering",
+      "von": "2004-03-21",
+      "bis": "2005-11-15",
+      "status": "abgeschlossen"
+    },
+    {
+      "spur": "Vorsitz",
+      "label": "Platzeck",
+      "von": "2005-11-15",
+      "bis": "2006-04-10",
+      "status": "abgeschlossen"
+    },
+    {
+      "spur": "Vorsitz",
+      "label": "Beck",
+      "von": "2006-04-10",
+      "bis": "2008-09-07",
+      "status": "abgeschlossen"
+    },
+    {
+      "spur": "Vorsitz",
+      "label": "Müntefering",
+      "von": "2008-10-18",
+      "bis": "2009-11-13",
+      "status": "abgeschlossen"
+    },
+    {
+      "spur": "Vorsitz",
+      "label": "Gabriel",
+      "von": "2009-11-13",
+      "bis": "2017-03-19",
+      "status": "abgeschlossen"
+    },
+    {
+      "spur": "Vorsitz",
+      "label": "Schulz",
+      "von": "2017-03-19",
+      "bis": "2018-02-13",
+      "status": "abgeschlossen"
+    },
+    {
+      "spur": "Vorsitz",
+      "label": "Nahles",
+      "von": "2018-04-22",
+      "bis": "2019-06-03",
+      "status": "abgeschlossen"
+    },
+    {
+      "spur": "Vorsitz",
+      "label": "Esken/Walter-Borjans",
+      "von": "2019-12-06",
+      "bis": "2021-12-11",
+      "status": "abgeschlossen"
+    },
+    {
+      "spur": "Vorsitz",
+      "label": "Esken/Klingbeil",
+      "von": "2021-12-11",
+      "bis": "2025-06-27",
+      "status": "abgeschlossen"
+    },
+    {
+      "spur": "Vorsitz",
+      "label": "Klingbeil/Bas",
+      "von": "2025-06-27",
+      "bis": "2026-10-12",
+      "status": "abgeschlossen"
+    },
+    {
+      "spur": "Vorsitz",
+      "label": "Klingbeil",
+      "von": "2026-10-12",
+      "bis": null,
+      "status": "laufend"
+    },
+    {
+      "spur": "Grundsatzprogramm",
+      "label": "Berliner Programm",
+      "von": "1989-12",
+      "bis": "2007-10",
+      "status": "abgeschlossen"
+    },
+    {
+      "spur": "Grundsatzprogramm",
+      "label": "Hamburger Programm",
+      "von": "2007-10",
+      "bis": null,
+      "status": "laufend"
+    },
+    {
+      "spur": "Neues Programm",
+      "label": "Neues Grundsatzprogramm (Beschluss Ende 2027 geplant)",
+      "von": "2026-02",
+      "bis": null,
+      "status": "in Arbeit"
+    },
+    {
+      "spur": "Rolle im Bund",
+      "label": "Opposition",
+      "von": "1982-10",
+      "bis": "1998-10",
+      "status": "Opposition"
+    },
+    {
+      "spur": "Rolle im Bund",
+      "label": "Rot-Grün",
+      "von": "1998-10",
+      "bis": "2005-11",
+      "status": "Regierung"
+    },
+    {
+      "spur": "Rolle im Bund",
+      "label": "Große Koalition",
+      "von": "2005-11",
+      "bis": "2009-10",
+      "status": "Regierung"
+    },
+    {
+      "spur": "Rolle im Bund",
+      "label": "Opposition",
+      "von": "2009-10",
+      "bis": "2013-12",
+      "status": "Opposition"
+    },
+    {
+      "spur": "Rolle im Bund",
+      "label": "Große Koalition",
+      "von": "2013-12",
+      "bis": "2021-12",
+      "status": "Regierung"
+    },
+    {
+      "spur": "Rolle im Bund",
+      "label": "Ampel",
+      "von": "2021-12",
+      "bis": "2024-11",
+      "status": "Regierung"
+    },
+    {
+      "spur": "Rolle im Bund",
+      "label": "Rot-Grün (Minderheit)",
+      "von": "2024-11",
+      "bis": "2025-05",
+      "status": "Regierung"
+    },
+    {
+      "spur": "Rolle im Bund",
+      "label": "Schwarz-Rot",
+      "von": "2025-05",
+      "bis": null,
+      "status": "Regierung"
+    }
+  ],
+  "belege": {
+    "wahlen": [
+      {
+        "name": "Deutscher Bundestag: Wahlergebnisse seit 1949",
+        "url": "https://www.bundestag.de/parlament/wahlen/ergebnisse_seit1949-244692"
+      },
+      {
+        "name": "wahlrecht.de: Bundestagswahlen (Prozente und Sitze)",
+        "url": "https://www.wahlrecht.de/ergebnisse/bundestag.htm"
+      }
+    ],
+    "zeitleiste": [
+      {
+        "name": "bpb: Geschichte der SPD",
+        "url": "https://www.bpb.de/themen/parteien/parteien-in-deutschland/spd/42082/geschichte/"
+      },
+      {
+        "name": "SPD: Grundsatzprogrammprozess",
+        "url": "https://www.spd.de/grundsatzprogramm"
+      },
+      {
+        "name": "Bundesregierung: Bundeskabinett",
+        "url": "https://www.bundesregierung.de/breg-de/bundesregierung/bundeskabinett"
+      }
+    ],
+    "vorsitz": [
+      {
+        "name": "Wikipedia (en): Leader of the SPD",
+        "url": "https://en.wikipedia.org/wiki/Leader_of_the_Social_Democratic_Party_of_Germany"
+      },
+      {
+        "name": "Wikipedia: Franz Müntefering, Matthias Platzeck, Kurt Beck (Amtsdaten 2004–2008)",
+        "url": "https://de.wikipedia.org/wiki/Matthias_Platzeck"
+      },
+      {
+        "name": "bpb: Geschichte der SPD",
+        "url": "https://www.bpb.de/themen/parteien/parteien-in-deutschland/spd/42082/geschichte/"
+      },
+      {
+        "name": "WirtschaftsWoche/dpa: Rücktritt Bas (12.10.2026)",
+        "url": "https://www.wiwo.de/politik/deutschland/baerbel-bas-ruecktritt-alexander-schweitzer-wird-neuer-bundesarbeitsminister/100261473.html"
+      }
+    ]
+  },
+  "belege_hinweis": {
+    "zeitleiste": "Rolle im Bund nach Monaten gerundet. Seit dem Rücktritt von Bärbel Bas (12.10.2026) führt Lars Klingbeil die Partei allein; Neuwahl der Spitze für Dezember 2026 oder Januar 2027 angekündigt (ZDF, 12.10.2026).",
+    "vorsitz": "Amtsdaten nach Wikipedia, nicht vollständig gegen Primärquellen geprüft. Ohne kommissarische Vorsitzende (Rau 1993, Steinmeier 2008, Scholz 2018, Dreyer/Schwesig/Schäfer-Gümbel 2019). Doppelspitzen als eine Amtszeit. Beck amtierte ab 10.04.2006 zunächst kommissarisch, gewählt am 14.05.2006."
+  }
+}

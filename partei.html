@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="de" class="kk-b-poli">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SPD-Monitor · Partei</title>
+<meta name="description" content="SPD auf Bundesebene 1998–2026: Wahlergebnisse, Rolle im Bund, Parteivorsitz und Grundsatzprogramme.">
+<link rel="canonical" href="https://kaffeeundkommiss.github.io/spd-monitor/partei.html">
+<!-- Vorschaukarten für Social Media und Blogs. Bilder erzeugt og/make-og.py (Routine, wöchentlich). -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SPD-Monitor">
+<meta property="og:locale" content="de_DE">
+<meta property="og:title" content="SPD-Monitor · Partei">
+<meta property="og:description" content="SPD auf Bundesebene 1998–2026: Wahlergebnisse, Rolle im Bund, Parteivorsitz und Grundsatzprogramme.">
+<meta property="og:url" content="https://kaffeeundkommiss.github.io/spd-monitor/partei.html">
+<meta property="og:image" content="https://kaffeeundkommiss.github.io/spd-monitor/og/partei.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Balkendiagramm der SPD-Bundestagswahlergebnisse seit 1998, gefärbt nach Rolle im Bund">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="SPD-Monitor · Partei">
+<meta name="twitter:description" content="SPD auf Bundesebene 1998–2026: Wahlergebnisse, Rolle im Bund, Parteivorsitz und Grundsatzprogramme.">
+<meta name="twitter:image" content="https://kaffeeundkommiss.github.io/spd-monitor/og/partei.png">
+<link rel="icon" href="icons/favicon.ico" sizes="32x32">
+<link rel="icon" href="icons/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#23211C">
+<meta name="apple-mobile-web-app-title" content="SPD-Monitor">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="basis.css">
+<link rel="stylesheet" href="partei.css?v=1">
+<link rel="stylesheet" href="bereich.css">
+</head>
+<body>
+<div class="kk-leiste"><div class="kk-in">
+  <a class="kk-haus" href="https://kaffeeundkommiss.github.io/"><img src="kk-tasse.svg" alt="" width="22" height="22"><span>Kaffee und Kommiss</span></a>
+  <nav class="kk-bereiche" aria-label="Bereiche"><a href="https://kaffeeundkommiss.github.io/erster-Weltkrieg/">Geschichte</a><a href="https://kaffeeundkommiss.github.io/bundeswehr-Afghanistan-/"><span class="kk-lang">Sicherheitspolitik</span><span class="kk-kurz">Sicherheit</span></a><a href="https://kaffeeundkommiss.github.io/politik/" aria-current="true">Politik</a></nav>
+</div></div>
+
+<header class="top">
+  <div class="wrap">
+    <div class="marke">
+      <img src="icons/icon.svg" width="40" height="40" alt="">
+      <div>
+        <div class="name">SPD-Monitor</div>
+        <div class="unter">Die Partei auf Bundesebene</div>
+      </div>
+    </div>
+    <div class="badges">
+      <span id="stand">Stand wird geladen …</span>
+      <span>Redaktionell gepflegt</span>
+    </div>
+  </div>
+</header>
+<nav class="seiten" aria-label="Seiten">
+  <div class="wrap">
+    <a href="index.html">Umfragen</a>
+    <a href="partei.html" aria-current="page">Partei</a>
+    <a href="programme.html">Programme</a>
+  </div>
+</nav>
+
+<main>
+  <section class="einleitung">
+    <h1>Die SPD im Bund 1998–2026</h1>
+    <p>Wahlergebnisse seit 1998, Rolle im Bund, Grundsatzprogramme und alle Amtszeiten im Parteivorsitz seit 1946. Zu den Wahlprogrammen siehe <a href="programme.html">Programme</a>.</p>
+  </section>
+
+  <section class="kennzahlen" id="kennzahlen" aria-label="Kennzahlen"></section>
+
+  <section class="karte diagramm" id="bundestagswahlen" aria-labelledby="wahlen-titel" data-teilen="Bundestagswahlen" data-quelle="Bundeswahlleiterin">
+    <h2 id="wahlen-titel">Bundestagswahlen</h2>
+    <p class="sub">Zweitstimmen in Prozent. Farbe: Rolle in der folgenden Wahlperiode.</p>
+    <div class="chart" id="chart-wahlen"></div>
+    <div class="legende" id="legende-wahlen"></div>
+    <p class="quelle" data-beleg="wahlen"></p>
+  </section>
+
+
+  <section class="karte diagramm" id="zeitleiste" aria-labelledby="zeit-titel" data-teilen="Vorsitz, Programme, Rolle im Bund" data-quelle="bpb, Bundeswahlleiterin">
+    <h2 id="zeit-titel">Vorsitz, Programme, Rolle im Bund</h2>
+    <p class="sub">Senkrechte Linien: Bundestagswahlen.</p>
+    <div class="chart" id="chart-zeit"></div>
+    <div class="legende" id="legende-zeit"></div>
+    <dl class="zeit-schluessel" id="schluessel-zeit" hidden></dl>
+    <p class="quelle" data-beleg="zeitleiste"></p>
+  </section>
+
+  <section class="vorsitz" id="vorsitz" aria-labelledby="vorsitz-titel">
+    <div class="kopfzeile">
+      <h2 id="vorsitz-titel">Parteivorsitz seit 1946</h2>
+      <span class="hint">Amtsende = Wahltag des Nachfolgers</span>
+    </div>
+    <div class="kennzahlen" id="vorsitz-kennzahlen"></div>
+    <div class="karte diagramm" id="vorsitzende" data-teilen="Parteivorsitz" data-quelle="SPD, bpb">
+      <h2 id="vorsitz-chart-titel">Amtszeiten im Zeitstrahl</h2>
+      <p class="sub">Amtsdauer in Jahren je Amtszeit, Doppelspitzen als ein Eintrag. Rot: amtierend, bis heute gerechnet.</p>
+      <div class="chart" id="chart-vorsitz"></div>
+      <details class="vtab">
+        <summary>Alle Amtszeiten als Tabelle</summary>
+        <div class="tabelle">
+          <table id="tabelle-vorsitz">
+            <thead><tr><th class="zahl">Nr.</th><th>Name</th><th>Beginn</th><th>Ende</th><th class="zahl">Jahre</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </details>
+      <p class="quelle" data-beleg="vorsitz"></p>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p class="kk-satz"><a href="https://kaffeeundkommiss.github.io/">Kaffee und Kommiss</a>: Politik, Geschichte und Sicherheitspolitik mit Quellen. Private, nichtkommerzielle Zusammenstellung.</p>
+    <span>Quellen stehen am jeweiligen Abschnitt.</span>
+    <span><a href="index.html">Zu den Umfragewerten</a></span>
+  </div>
+</footer>
+
+<!-- ?v= bei jeder Änderung an monitor-utils.js / partei-utils.js hochzählen (Browser-Cache). -->
+<script src="monitor-utils.js?v=3"></script>
+<script src="partei-utils.js?v=2"></script>
+<script src="teilen.js?v=2"></script>
+<script src="partei-seite.js?v=1"></script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+# Routine-Prompt: SPD-Monitor aktualisieren
+
+Diesen Text als Zusatzschritt an die bestehende wöchentliche Umfrage-Routine in Claude Code anhängen (oder als eigene Routine anlegen). Repo: das GitHub-Repo mit `index.html`, `data.json`, `update.py`.
+
+---
+
+## Schritt: Website „SPD-Monitor" aktualisieren
+
+1. Lies `data.json["ebenen"]` und ermittle für jede Ebene mit einem `dawum_slug` den gewichteten dawum-Wahltrend der SPD von `https://dawum.de/<dawum_slug>/` (z. B. `https://dawum.de/Bundestag/`, `https://dawum.de/Sachsen-Anhalt/`). **Notiere zu jedem Wert das Trend-Datum, das dawum selbst angibt** (steht auf der Seite am Wahltrend, z. B. „Wahltrend vom 11.10.2026") – nicht das heutige Datum. Überspringe eine Ebene, wenn dort kein Wahltrend ausgewiesen ist – das ist normal: dawum weist für ein Bundesland keinen Trend aus, solange dort zu wenige aktuelle Umfragen vorliegen. Den eingefrorenen Altwert musst du nicht selbst entfernen, `update.py` verwirft ihn ab `wahltrend_max_alter_tage` Tagen automatisch (siehe Schritt 2).
+
+2. Führe im Repo-Root aus, mit einem `--trend <id> <Wert>` je Ebene, für die ein Wert vorliegt (Dezimalpunkt, z. B. `4.4`; `id` ist das Feld `"id"` der jeweiligen Ebene) und `--stand` mit dem Trend-Datum aus Schritt 1:
+   ```
+   python3 update.py --stand <JJJJ-MM-TT> --trend bund <Wert> --trend nrw <Wert> --trend sachsen-anhalt <Wert>
+   ```
+   `--stand` ist Pflicht, sobald `--trend` dabei ist – das Skript bricht sonst ab. Grund: die Seite zeigt „Stand" als Aktualität des Werts, und die Alterung (unten) rechnet daraus. Das Abrufdatum einzutragen ließe einen alten Trend zu jung wirken. Weisen mehrere Ebenen unterschiedliche Trend-Daten aus, rufe das Skript je Datum einmal auf.
+   Das Skript berechnet Δ zur Vorwoche selbst und speichert die Einzelumfragen aller Ebenen als Fallback. Außerdem holt es für Ebenen mit `verlauf_tage` die Zeitreihe der letzten N Tage aus der vollständigen dawum-Datenbank (`https://api.dawum.de/`) und schreibt sie nach `verlauf` – daraus zeichnet die Seite das Zeitverlauf-Diagramm. Die Meldung „Zeitverlauf gespeichert: … Umfrage(n)" gehört zum Normalbetrieb. Der Abruf kann einige Sekunden dauern, die Datenbank reicht bis 2017 zurück. Ist sie nicht erreichbar, bleibt die alte Zeitreihe stehen und das Skript läuft weiter. Außerdem verwirft es einen Wahltrend, dessen `stand` älter als `wahltrend_max_alter_tage` Tage ist (21, nach dawums eigenem 20-Tage-Fenster) – die Seite zeigt dann als Leitzahl den Ø der Einzelumfragen, der sich bei jedem Seitenaufruf aktualisiert. Meldet das Skript „Wahltrend <id> verworfen", ist das kein Fehler, sondern genau dieser Fall. Gib die Ausgabe des Skripts wieder. Meldet es „Keine inhaltlichen Änderungen", lässt es `data.json` bewusst unangetastet – das ist kein Fehler.
+
+3. Amtliche Wahlergebnisse nachtragen. Betroffen sind zwei Fälle:
+
+   a) **Ebene ohne Ergebnis**: `wahltermin` liegt in der Vergangenheit und `wahlergebnis` ist noch `null`. Prüfe per Web-Suche (Landeswahlleiter/Bundeswahlleiter, dpa/Reuters als zweite Wahl), ob ein amtliches Ergebnis für die SPD vorliegt, und trage es ein:
+      - endgültiges amtliches Endergebnis (vom Landeswahlausschuss festgestellt): `{"wert": <Prozent>, "datum": "<Wahltermin>"}`
+      - nur vorläufiges amtliches Endergebnis: zusätzlich `"vorlaeufig": true`, also `{"wert": <Prozent>, "datum": "<Wahltermin>", "vorlaeufig": true}`
+
+   Sobald ein **endgültiges** `wahlergebnis` steht, ist die Ebene abgeschlossen: `update.py` verwirft ihre gespeicherten Einzelumfragen einmalig und überspringt sie danach, die Seite fragt für sie nichts mehr ab. Meldungen wie „… Wahl gelaufen – 5 Einzelumfrage(n) durch das amtliche Ergebnis ersetzt" oder „Keine offene Wahl – dawum wird nicht abgefragt" sind deshalb erwartet und kein Fehler. Du musst dafür nichts weiter tun.
+
+   b) **Ebene mit vorläufigem Ergebnis**: `wahlergebnis.vorlaeufig` ist `true`. Prüfe erneut, ob inzwischen das endgültige Ergebnis feststeht. Falls ja, korrigiere `wert` auf den endgültigen Wert und **entferne das Feld `vorlaeufig`** – damit ist die Ebene abgeschlossen und wird nicht mehr geprüft. Falls nein, alles unverändert lassen.
+
+   Trage zusätzlich die Fundstelle ein, damit die Seite das Ergebnis belegt: `"quelle": {"name": "<Landeswahlleitung oder Statistisches Landesamt>", "url": "https://…"}` im `wahlergebnis`. Nur eine Seite angeben, die du selbst aufgerufen hast und die den Wert zeigt.
+
+   Vergleichswert `vorwahl`: Er bleibt bei einer gelaufenen Wahl unverändert (er ist die Wahl davor). Erst wenn für dasselbe Land ein neuer `wahltermin` gesetzt und `wahlergebnis` auf `null` zurückgestellt wird, `vorwahl` auf das bisherige Ergebnis setzen (`wert`, `jahr`, `quelle`).
+
+   Achte auf die richtige Stimme: maßgeblich ist der **Zweitstimmen**-Anteil (Landesstimme), nicht der Erststimmen-Anteil. Bei unklarer Quellenlage `wahlergebnis` unverändert lassen und das in der Abschlussmeldung erwähnen.
+
+4. Prüfe, dass `data.json` gültiges JSON ist (`python3 -c "import json;json.load(open('data.json'))"`).
+
+   Hat `update.py` „data.json geschrieben" gemeldet, hat es auch eine Wochen-Momentaufnahme `archiv/<JJJJ>-KW<ww>.json` angelegt (fester Link für Blogposts, `index.html?stand=2026-KW45`). Erzeuge dann außerdem die Vorschaubilder für Social Media neu:
+   ```
+   python3 og/make-og.py
+   ```
+   Das Skript braucht Pillow. Fehlt es, zuerst `pip install pillow`. Schlägt die Installation fehl, den Schritt überspringen und das in der Abschlussmeldung erwähnen – die Seite funktioniert auch mit dem Bild der Vorwoche.
+
+   **Parteidaten (`partei.json`) prüfen.** Die Seiten „Partei" und „Programme" zeigen `partei.json["stand"]` als Datenstand. Prüfe per Web-Suche (zwei unabhängige Quellen, z. B. tagesschau und dpa), ob sich seit `stand` etwas geändert hat: Parteivorsitz (`vorsitzende`, letzter Eintrag mit `"ende": null`; Doppelspitze als ein Eintrag „Name / Name“; offen ist die Neuwahl der Spitze nach dem Rücktritt von Bärbel Bas am 12.10.2026), Rolle im Bund (letzter Eintrag der Spur „Rolle im Bund" in `zeitleiste`, laufend mit `"bis": null`), neue Bundestagswahl in `wahlen`. Trage Änderungen nur mit Beleg ein. Setze danach `stand` auf das heutige Datum (`JJJJ-MM-TT`) – `stand` heißt hier „zuletzt geprüft". Bei unklarer Lage nichts ändern und das in der Abschlussmeldung erwähnen. Prüfe danach: `python3 -c "import json;json.load(open('partei.json'))"`.
+
+5. Prüfe zuerst, ob es überhaupt etwas zu committen gibt: `git status --porcelain data.json partei.json archiv og`.
+   - Gibt das eine Zeile aus: `git add data.json partei.json archiv og && git commit -m "Monitor-Update KW <Kalenderwoche>" && git push`.
+   - Ist die Ausgabe leer, hat sich nichts geändert. Dann **kein** Commit und **kein** Push – das ist der Normalfall bei einem Lauf ohne neue Umfragen und kein Fehler.
+
+6. Melde am Ende: Wahltrend-Werte mit Δ je Ebene, ob dawum live erreichbar war, ob die Vorschaubilder neu erzeugt wurden, ob sich an den Parteidaten etwas geändert hat, ob ein neues Wahlergebnis eingetragen oder ein vorläufiges durch das endgültige ersetzt wurde, und ob committet wurde oder es nichts zu ändern gab.
+
+---
+
+## Anmerkungen für Jan
+
+- Die Instagram-Anbindung (Posts, Faktencheck) wurde entfernt und kann bei Bedarf später wieder ergänzt werden – die Git-Historie enthält den vollständigen alten Code.
+- Neue Ebene (z. B. weiteres Bundesland) hinzufügen: Eintrag in `data.json["ebenen"]` ergänzen (siehe ANLEITUNG.md), danach greift diese Routine automatisch mit.

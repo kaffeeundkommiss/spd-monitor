@@ -1,0 +1,291 @@
+#!/usr/bin/env python3
+"""
+SPD-Monitor – Aktualisierungsskript (nur Python-Standardbibliothek).
+
+Aufruf:  python3 update.py
+Ergebnis:
+  1. Die neuesten Umfragewerte der Partei (PARTEI, hier SPD) für jede Ebene aus data.json["ebenen"] werden von
+     api.dawum.de gespeichert – als Fallback, falls der Browser die API nicht direkt
+     erreichen kann. Umfragen älter als data.json["ebenen"][*]["umfrage_max_alter_tage"]
+     Tage (Standard: kein Limit) werden dabei aussortiert.
+  2. Optional: dawum-Wahltrend je Ebene setzen (gewichteter Durchschnitt, steht nicht in
+     der API):
+       python3 update.py --stand 2026-10-11 --trend bund 4.4 --trend nrw 5.6
+     (Ebene-IDs stehen in data.json["ebenen"][*]["id"].) Δ zur Vorwoche wird aus dem
+     bisher gespeicherten Wert berechnet. --stand YYYY-MM-DD ist dabei Pflicht und muss
+     das Trend-Datum sein, das dawum selbst ausweist – nicht das Datum des Abrufs, sonst
+     wirkt der Wert aktueller als er ist und altert zu spät aus (siehe 4.).
+  3. Steht für eine Ebene ein endgültiges amtliches Wahlergebnis, gilt die Wahl als
+     abgeschlossen: ihre gespeicherten Einzelumfragen werden einmalig verworfen (das
+     Ergebnis sagt dasselbe genauer) und sie wird fortan übersprungen – für eine
+     entschiedene Wahl braucht es keine Abfrage mehr. Sind alle Wahlen abgeschlossen,
+     unterbleibt der dawum-Abruf ganz. Wieder aufnehmen: neuen "wahltermin" setzen und
+     "wahlergebnis" auf null.
+  4. Ein gespeicherter Wahltrend, der älter als
+     data.json["ebenen"][*]["wahltrend_max_alter_tage"] Tage ist, wird verworfen. Sonst
+     bliebe ein Wert, den dawum nicht mehr ausweist, dauerhaft als Leitzahl stehen; die
+     Seite zeigt dann stattdessen den laufend aktualisierten Ø der Einzelumfragen.
+  5. Für Ebenen mit "verlauf_tage" wird zusätzlich die vollständige dawum-Datenbank
+     geladen und daraus die Zeitreihe der letzten N Tage nach "verlauf" geschrieben
+     (jede Einzelumfrage, nicht nur die neueste je Institut). Das passiert bewusst hier
+     und nicht im Browser: die Gesamtdatenbank reicht bis 2017 über alle Parlamente und
+     wäre bei jedem Seitenaufruf unverhältnismäßig.
+  6. Nur wenn sich inhaltlich etwas geändert hat (Wahltrend oder Umfragen), wird
+     "erstellt" auf jetzt gesetzt und data.json geschrieben. Andernfalls bleibt die
+     Datei unangetastet, damit kein Commit entsteht, der nur den Zeitstempel enthält.
+  7. Mit jedem Schreiben entsteht zusätzlich eine Wochen-Momentaufnahme
+     archiv/<JJJJ>-KW<ww>.json (Kopie von data.json, ISO-Woche von "erstellt") und
+     archiv/index.json listet alle vorhandenen. Die Seite zeigt sie unter
+     index.html?stand=2026-KW45 – ein fester Link für Blogposts, dessen Zahlen sich
+     nicht mehr ändern. Mehrere Läufe in derselben Woche überschreiben die Aufnahme.
+"""
+import argparse
+import json, re, os, urllib.request
+from datetime import datetime, timezone, timedelta
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+DATA = os.path.join(HERE, "data.json")
+DAWUM = "https://api.dawum.de/newest_surveys.json"
+# Die vollständige Datenbank (alle Umfragen seit 2017, alle Parlamente). Nur für den
+# Zeitverlauf nötig und bewusst nur hier: der Browser soll das nicht bei jedem
+# Seitenaufruf laden, sondern die fertige Zeitreihe aus data.json lesen.
+DAWUM_VOLL = "https://api.dawum.de/"
+UA = "Mozilla/5.0 (spd-monitor; github-pages)"
+# Partei, um die es geht (dawum-Kürzel). Gegenstück zu PARTEI in monitor-utils.js.
+PARTEI = "SPD"
+TZ = timezone(timedelta(hours=2))  # Europa/Berlin (Sommerzeit); nur für "erstellt"
+
+def get(url, timeout=20):
+    req = urllib.request.Request(url, headers={"User-Agent": UA})
+    with urllib.request.urlopen(req, timeout=timeout) as r:
+        return r.read()
+
+def load_data():
+    with open(DATA, encoding="utf-8") as f:
+        return json.load(f)
+
+def save_data(d):
+    with open(DATA, "w", encoding="utf-8") as f:
+        json.dump(d, f, ensure_ascii=False, indent=2)
+        f.write("\n")
+
+def archiv_kennung(erstellt):
+    """ "2026-11-02T09:20+02:00" -> "2026-KW45" (ISO-Woche des Kalenderdatums, wie
+    isoWoche() in monitor-utils.js)."""
+    jahr, woche, _ = datetime.strptime(erstellt[:10], "%Y-%m-%d").date().isocalendar()
+    return f"{jahr}-KW{woche:02d}"
+
+def archivieren(d):
+    """Momentaufnahme der gerade geschriebenen Daten ablegen und den Index erneuern."""
+    # Neben data.json, nicht fest im Repo: so schreiben Tests mit umgebogenem DATA
+    # nicht versehentlich ins echte Archiv.
+    ARCHIV = os.path.join(os.path.dirname(DATA), "archiv")
+    os.makedirs(ARCHIV, exist_ok=True)
+    kennung = archiv_kennung(d["erstellt"])
+    with open(os.path.join(ARCHIV, kennung + ".json"), "w", encoding="utf-8") as f:
+        json.dump(d, f, ensure_ascii=False, indent=2)
+        f.write("\n")
+    alle = sorted(n[:-5] for n in os.listdir(ARCHIV) if re.fullmatch(r"\d{4}-KW\d{2}\.json", n))
+    with open(os.path.join(ARCHIV, "index.json"), "w", encoding="utf-8") as f:
+        json.dump(alle, f, ensure_ascii=False, indent=0)
+        f.write("\n")
+    print(f"Momentaufnahme archiv/{kennung}.json gespeichert.")
+    return kennung
+
+def partei_rows(db, parl_regex, kuerzel=None):
+    parties = db.get("Parties", {}); parls = db.get("Parliaments", {}); insts = db.get("Institutes", {})
+    ziel = (kuerzel or PARTEI).upper()
+    pid = next((k for k, v in parties.items() if (v.get("Shortcut") or "").upper() == ziel), None)
+    pids = {k for k, v in parls.items() if re.search(parl_regex, f"{v.get('Shortcut','')} {v.get('Name','')}", re.I)}
+    rows = []
+    for s in db.get("Surveys", {}).values():
+        if str(s.get("Parliament_ID")) not in pids:
+            continue
+        v = (s.get("Results") or {}).get(pid)
+        if v is None:
+            continue
+        rows.append({"institut": insts.get(str(s.get("Institute_ID")), {}).get("Name", "?"),
+                     "datum": s.get("Date"), "wert": float(v)})
+    return sorted(rows, key=lambda r: r["datum"] or "", reverse=True)
+
+def filter_by_age(rows, max_age_days, today=None):
+    """Umfragen ohne verwertbares Datum oder älter als max_age_days aussortieren."""
+    if max_age_days is None:
+        return rows
+    today = today or datetime.now(TZ).date()
+    cutoff = today - timedelta(days=max_age_days)
+    out = []
+    for r in rows:
+        try:
+            d = datetime.strptime(r.get("datum") or "", "%Y-%m-%d").date()
+        except ValueError:
+            continue
+        if d >= cutoff:
+            out.append(r)
+    return out
+
+TREND_LEER = {"wert": None, "delta": None, "stand": None}
+
+def filter_trend(trend, max_age_days, today=None):
+    """Einen zu alten Wahltrend verwerfen (zurückgeben: verwertbarer Trend oder TREND_LEER).
+
+    dawum weist den Wahltrend einer Ebene nicht mehr aus, sobald dort länger keine
+    Umfragen erscheinen. Die Routine findet dann keinen Wert mehr und überspringt die
+    Ebene – ohne diese Prüfung bliebe der zuletzt gespeicherte Wert dauerhaft als
+    Leitzahl stehen, auch wenn die Einzelumfragen längst woanders liegen.
+    """
+    if not trend or trend.get("wert") is None or max_age_days is None:
+        return trend
+    today = today or datetime.now(TZ).date()
+    try:
+        stand = datetime.strptime(trend.get("stand") or "", "%Y-%m-%d").date()
+    except ValueError:
+        return dict(TREND_LEER)  # ohne Stand nicht datierbar
+    return trend if stand >= today - timedelta(days=max_age_days) else dict(TREND_LEER)
+
+def drop_stale_trends(d, today=None):
+    """filter_trend() auf alle Ebenen anwenden und das Verworfene melden."""
+    for ebene in d.get("ebenen", []):
+        alt = ebene.get("wahltrend")
+        neu = filter_trend(alt, ebene.get("wahltrend_max_alter_tage"), today=today)
+        if neu is not alt:  # filter_trend() gibt bei "behalten" dasselbe Objekt zurück
+            ebene["wahltrend"] = neu
+            print(f"Wahltrend {ebene['id']} verworfen: Stand {(alt or {}).get('stand')} ist älter als "
+                  f"{ebene['wahltrend_max_alter_tage']} Tage – Leitzahl fällt auf den Ø der Umfragen zurück.")
+
+def abgeschlossen(ebene):
+    """Wahl gelaufen und amtlich endgültig festgestellt – hier ändert sich nichts mehr.
+
+    Ein noch vorläufiges Ergebnis zählt nicht: solange der Landeswahlausschuss nicht
+    entschieden hat, bleibt die Ebene in der normalen Aktualisierung.
+    """
+    erg = ebene.get("wahlergebnis") or {}
+    return erg.get("wert") is not None and not erg.get("vorlaeufig")
+
+def ergebnis_ersetzt_umfragen(d):
+    """Bei abgeschlossenen Wahlen tritt das amtliche Ergebnis an die Stelle der Umfragen.
+
+    Die gespeicherten Einzelumfragen betreffen eine entschiedene Frage; das Ergebnis sagt
+    dasselbe genauer. Sie bleiben in der Git-Historie erhalten.
+    """
+    for ebene in d.get("ebenen", []):
+        if not abgeschlossen(ebene):
+            continue
+        alt = (ebene.get("umfragen") or {}).get("rows") or []
+        if alt:
+            ebene["umfragen"] = {"stand": (ebene.get("wahlergebnis") or {}).get("datum"), "rows": []}
+            print(f"{ebene['name']}: Wahl gelaufen – {len(alt)} Einzelumfrage(n) durch das "
+                  f"amtliche Ergebnis ersetzt.")
+
+def update_polls(d):
+    offen = [e for e in d.get("ebenen", []) if not abgeschlossen(e)]
+    uebersprungen = len(d.get("ebenen", [])) - len(offen)
+    if uebersprungen:
+        print(f"{uebersprungen} abgeschlossene Wahl(en) übersprungen – dort ist das amtliche "
+              f"Ergebnis maßgeblich.")
+    if not offen:
+        # Nichts mehr abzufragen: dann auch keine Anfrage an dawum stellen.
+        print("Keine offene Wahl – dawum wird nicht abgefragt.")
+        return
+    try:
+        db = json.loads(get(DAWUM, timeout=30))
+    except Exception as e:
+        print(f"! dawum nicht erreichbar ({e}); alte Umfragedaten bleiben stehen")
+        return
+    stand = db.get("Database", {}).get("Last_Update")
+    for ebene in offen:
+        rows = partei_rows(db, ebene["parlament_regex"])
+        rows = filter_by_age(rows, ebene.get("umfrage_max_alter_tage"))
+        ebene["umfragen"] = {"stand": stand, "rows": rows}
+        print(f"Umfragen gespeichert: {ebene['name']}: {len(rows)} Einzelumfrage(n).")
+
+def set_trend(d, ebene_id, value, stand):
+    ebene = next((e for e in d.get("ebenen", []) if e["id"] == ebene_id), None)
+    if ebene is None:
+        raise SystemExit(f"Unbekannte Ebene '{ebene_id}' – siehe data.json[\"ebenen\"][*][\"id\"]")
+    t = ebene.setdefault("wahltrend", {"wert": None, "delta": None, "stand": None})
+    old = t.get("wert")
+    t["delta"] = round(value - old, 1) if isinstance(old, (int, float)) and t.get("stand") != stand else t.get("delta")
+    t["wert"] = round(value, 1)
+    t["stand"] = stand
+    print(f"Wahltrend {ebene_id}: {t['wert']} % (Δ {t['delta']}), Stand {stand}")
+
+def verlauf_rows(db, parl_regex, tage, today=None):
+    """Alle Einzelumfragen der letzten <tage> Tage für ein Parlament, älteste zuerst.
+
+    Anders als partei_rows() ist das nicht auf die neueste Umfrage je Institut beschränkt –
+    für eine Zeitreihe braucht es jede einzelne Erhebung.
+    """
+    today = today or datetime.now(TZ).date()
+    ab = today - timedelta(days=tage)
+    rows = []
+    for r in partei_rows(db, parl_regex):
+        try:
+            d = datetime.strptime(r.get("datum") or "", "%Y-%m-%d").date()
+        except ValueError:
+            continue
+        if d >= ab:
+            rows.append(r)
+    return sorted(rows, key=lambda r: (r["datum"], r["institut"]))
+
+def update_verlauf(d):
+    """Zeitreihe für jede Ebene mit "verlauf_tage" aus der vollständigen dawum-DB holen."""
+    ebenen = [e for e in d.get("ebenen", [])
+              if e.get("verlauf_tage") and not abgeschlossen(e)]
+    if not ebenen:
+        return
+    try:
+        db = json.loads(get(DAWUM_VOLL, timeout=60))
+    except Exception as e:
+        print(f"! dawum-Gesamtdatenbank nicht erreichbar ({e}); alter Zeitverlauf bleibt stehen")
+        return
+    stand = db.get("Database", {}).get("Last_Update")
+    for ebene in ebenen:
+        tage = ebene["verlauf_tage"]
+        rows = verlauf_rows(db, ebene["parlament_regex"], tage)
+        ebene["verlauf"] = {"stand": stand, "tage": tage, "rows": rows}
+        print(f"Zeitverlauf gespeichert: {ebene['name']}: {len(rows)} Umfrage(n) "
+              f"der letzten {tage} Tage.")
+
+def inhalt_signatur(d):
+    """Fingerabdruck der inhaltlichen Daten – ohne "erstellt", das sich bei jedem Lauf ändert."""
+    return json.dumps(d.get("ebenen", []), sort_keys=True, ensure_ascii=False)
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--trend", nargs=2, action="append", metavar=("EBENE", "WERT"),
+                     help="dawum-Wahltrend für Ebene setzen, z.B. --trend bund 4.4 --trend nrw 5.6 "
+                          "(Ebene-IDs stehen in data.json[\"ebenen\"][*][\"id\"])")
+    ap.add_argument("--stand", help="Trend-Datum, das dawum selbst ausweist (YYYY-MM-DD). "
+                                    "Pflicht zusammen mit --trend")
+    ap.add_argument("--nur-trend", action="store_true", help="nur Wahltrend setzen, keine Umfragen abrufen")
+    a = ap.parse_args()
+    if a.trend and not a.stand:
+        # Ohne --stand hätte das Abrufdatum als Trend-Datum gegolten. Das misst das falsche:
+        # die Seite zeigt "Stand" als Aktualität des Werts an, und filter_trend() rechnet das
+        # Alter daraus. Ein am 21.09. abgerufener Trend, den dawum auf den 03.09. datiert, wäre
+        # 18 Tage zu jung gewirkt und nicht ausgealtert.
+        raise SystemExit("--trend benötigt --stand YYYY-MM-DD: das Trend-Datum, das dawum "
+                         "selbst angibt (nicht das Datum des Abrufs).")
+    d = load_data()
+    vorher = inhalt_signatur(d)
+    stand = a.stand  # bei --trend oben erzwungen, sonst unbenutzt
+    for ebene_id, value in (a.trend or []):
+        set_trend(d, ebene_id, float(value), stand)
+    drop_stale_trends(d)
+    ergebnis_ersetzt_umfragen(d)
+    if not a.nur_trend:
+        update_polls(d)
+        update_verlauf(d)
+    if inhalt_signatur(d) == vorher:
+        # Nichts Inhaltliches geändert: data.json unangetastet lassen, damit kein Commit
+        # entsteht, der nur einen neuen Zeitstempel enthält.
+        print("Keine inhaltlichen Änderungen – data.json bleibt unverändert.")
+        return
+    d["erstellt"] = datetime.now(TZ).isoformat(timespec="minutes")
+    save_data(d)
+    print("data.json geschrieben.")
+    archivieren(d)
+
+if __name__ == "__main__":
+    main()

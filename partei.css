@@ -1,0 +1,103 @@
+/* Gemeinsame Gestaltung von partei.html und programme.html. */
+  /* Farben und Schrift wie index.html. Rollen: Regierung = --partei, Opposition = --opp,
+     nicht im Bundestag = --huerde. */
+  :root{
+    --bg:#F5F6F2; --paper:#FFFFFF; --ink:#171A21; --mute:#5E6470; --line:#E3E5DE;
+    --rail:#EEF0EA; --hair:#F0F1EC;
+    --ueber:#1E4FD8; --partei:#E3000F; --huerde:#7A1E14; --opp:#9AA0AA;
+    --body:"IBM Plex Sans",system-ui,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,monospace;
+    --max:1180px; --r:14px;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.45}
+  a{color:var(--ueber)} a:hover{color:#163BA3}
+  .wrap{max-width:var(--max);margin:0 auto;padding:0 24px}
+  h2{margin:0;font-size:22px;font-weight:700;letter-spacing:-.01em}
+
+  /* ---------- Kopf (wie index.html) ---------- */
+  header.top{background:var(--ink);color:#F5F6F2}
+  header.top .wrap{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;padding-top:18px;padding-bottom:18px}
+  .marke{display:flex;align-items:center;gap:14px}
+  .marke img{width:40px;height:40px;display:block;border-radius:9px}
+  .marke .name{font-weight:700;font-size:20px;letter-spacing:-.01em}
+  .marke .unter{font-size:13px;color:#B9BDC6}
+  .badges{display:flex;flex-wrap:wrap;gap:8px;font-family:var(--mono);font-size:13px}
+  .badges span{padding:6px 10px;border:1px solid #3A3F4B;border-radius:6px;white-space:nowrap}
+  nav.seiten{background:var(--ink);border-top:1px solid #2A2E38}
+  nav.seiten .wrap{display:flex;gap:4px}
+  nav.seiten a{color:#B9BDC6;text-decoration:none;font-weight:600;font-size:14px;padding:12px 14px;border-bottom:3px solid transparent}
+  nav.seiten a:hover{color:#F5F6F2}
+  nav.seiten a[aria-current="page"]{color:#F5F6F2;border-bottom-color:var(--partei)}
+  nav.seiten a:focus-visible{outline:2px solid var(--partei);outline-offset:-2px}
+
+  main{max-width:var(--max);margin:0 auto;padding:32px 24px 8px;display:flex;flex-direction:column;gap:24px}
+  .karte{background:var(--paper);border:1px solid var(--line);border-radius:var(--r)}
+  .einleitung h1{margin:0;font-size:28px;font-weight:700;letter-spacing:-.015em}
+  .einleitung p{margin:6px 0 0;color:var(--mute);max-width:72ch}
+
+  .kennzahlen{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+  .kennzahlen .karte{padding:18px 20px}
+  .kennzahlen .lbl{font-size:13px;color:var(--mute)}
+  .kennzahlen .num{font-family:var(--mono);font-weight:600;font-size:40px;letter-spacing:-.03em;line-height:1.1;margin-top:4px}
+  .kennzahlen .num.rot{color:var(--huerde)}
+  .kennzahlen .sub{font-size:13px;color:var(--mute);margin-top:4px}
+
+  .diagramm{padding:24px 28px;min-width:0}
+  .diagramm h2{font-size:15px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--mute)}
+  .diagramm .sub{margin:6px 0 14px;font-size:13px;color:var(--mute);max-width:80ch}
+  .chart{position:relative;min-height:240px}
+  .chart svg{display:block;width:100%;height:auto;overflow:visible}
+  .chart text{font-family:var(--body);font-size:13px;fill:var(--mute)}
+  .chart text.stark{fill:var(--ink);font-weight:500}
+  .chart text.wert{font-family:var(--mono);font-weight:600;fill:var(--ink)}
+  /* Werte über Linien freistellen, wie .fv-frei auf der Umfrageseite */
+  .chart text.frei{paint-order:stroke fill;stroke:var(--paper);stroke-width:3.5px;stroke-linejoin:round}
+  .legende{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:12px;font-size:13px;color:var(--mute)}
+  .legende span{display:inline-flex;align-items:center;gap:6px}
+  .legende i{width:12px;height:12px;border-radius:3px;display:inline-block}
+
+  #chart-zeit{min-height:0}
+  /* Schlüssel unter der Zeitleiste: nennt, was in zu schmalen Balken nicht beschriftet ist */
+  .zeit-schluessel{margin:12px 0 0;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:13px;line-height:1.4}
+  .zeit-schluessel dt{color:var(--mute)}
+  .zeit-schluessel dd{margin:0}
+
+  .tip{position:absolute;pointer-events:none;display:none;z-index:2;max-width:280px;
+    background:var(--paper);border:1px solid var(--line);border-radius:8px;
+    padding:8px 10px;font-size:13px;line-height:1.45;box-shadow:0 4px 14px rgba(23,26,33,.16)}
+  .tip .k{font-family:var(--mono);color:var(--mute);margin-bottom:2px}
+  .tip .m{font-weight:600}
+
+  .kopfzeile{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px}
+  .kopfzeile .hint{font-size:13px;color:var(--mute)}
+  .vorsitz{display:flex;flex-direction:column;gap:16px}
+  details.vtab{margin-top:16px;border-top:1px solid var(--line);padding-top:12px}
+  details.vtab>summary{cursor:pointer;font-size:14px;font-weight:600;min-height:32px;display:flex;align-items:center}
+  details.vtab>summary:focus-visible{outline:2px solid var(--ueber);outline-offset:2px}
+  .tabelle{overflow-x:auto;margin-top:8px}
+  .tabelle table{width:100%;border-collapse:collapse;font-size:14px;min-width:420px}
+  .tabelle th{text-align:left;padding:8px 12px;font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--mute)}
+  .tabelle td{padding:8px 12px;border-top:1px solid var(--hair)}
+  .tabelle td.zahl,.tabelle th.zahl{text-align:right;font-family:var(--mono)}
+  .tabelle td.datum{font-family:var(--mono);color:var(--mute)}
+  .tabelle tr.laufend td{font-weight:600}
+  .quelle{margin:14px 0 0;font-size:13px;color:var(--mute)}
+  .quelle a{color:var(--mute)}
+  .fehler{padding:20px;font-size:14px;color:#8A1C12;background:#FDECEA;border-radius:var(--r)}
+
+  footer{margin-top:40px}
+  footer .wrap{border-top:1px solid var(--line);padding:20px 0 48px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;font-size:13px;color:var(--mute)}
+
+  @media(max-width:599px){
+    .wrap,main{padding-left:16px;padding-right:16px}
+    main{padding-top:20px}
+    .einleitung h1{font-size:24px}
+    .diagramm{padding:18px 16px}
+    .kennzahlen{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    .kennzahlen .karte{padding:14px}
+    .kennzahlen .num{font-size:26px}
+    .zeit-schluessel{grid-template-columns:1fr;gap:0}
+    .zeit-schluessel dd{margin-bottom:8px}
+  }

@@ -1,0 +1,45 @@
+/* Bereichsnote Politik im Grundsystem Kaffee und Kommiss (basis.css): Blau, Umfragebalken im Kopfband, gelbes Signet.
+   Überschreibt Grundfarben, Kopf, Navigation, Fuß und Ecken von index.html, partei.html und programme.html.
+   Die Seite hat keinen Dunkelmodus, deshalb bleibt auch das Grundsystem hell. */
+:root.kk-b-poli { --kk-max: 1180px;
+  --bg: #F3F0E8; --paper: #FFFDF8; --ink: #23211C; --mute: #625B4E; --line: #DAD2C2; --rail: #E9E3D7; --hair: #ECE7DD;
+  --keine-bg: #ECE6DA; --r: 2px }
+@media (prefers-color-scheme: dark) { :root.kk-b-poli:not([data-theme="light"]) {
+  --kk-grund: #F3F0E8; --kk-papier: #FFFDF8; --kk-tinte: #23211C; --kk-grau: #625B4E; --kk-linie: #DAD2C2;
+  --kk-schild: rgba(255,253,248,.95); --kk-dimm: transparent; --kk-leiste: #23211C;
+  --kk-akzent: #1E4FD8; --kk-akzent-hell: #E3EAFB; --kk-kopf: #ECEEF3; --kk-markierung: #7C9BF0; color-scheme: light } }
+
+/* Kopf: Kopfband mit Umfragebalken statt dunklem Balken */
+.kk-b-poli header.top { background: linear-gradient(var(--kk-dimm), var(--kk-dimm)), var(--kk-muster), var(--kk-kopf);
+  color: var(--kk-tinte); border-bottom: 4px solid var(--kk-akzent) }
+.kk-b-poli header.top .wrap { padding-top: 22px; padding-bottom: 22px }
+.kk-b-poli .marke { background: var(--kk-schild); border: 1px solid var(--kk-linie); padding: 10px 16px 10px 12px; gap: 12px }
+.kk-b-poli .marke img { width: 44px; height: 44px }
+.kk-b-poli .marke .name { font: 700 22px/1.05 var(--kk-titel); text-transform: uppercase; letter-spacing: .04em }
+.kk-b-poli .marke .unter { color: var(--kk-grau) }
+.kk-b-poli .badges span { background: var(--kk-schild); border-color: var(--kk-linie); border-radius: 0 }
+.kk-b-poli .badge-knopf { background: var(--kk-schild); border-color: var(--kk-akzent); color: var(--kk-akzent); border-radius: 0 }
+.kk-b-poli .badge-knopf:hover { background: var(--kk-akzent); color: #fff }
+
+/* Seitennavigation wie in den anderen Bereichen: helle Leiste, Versalien, Akzentstrich */
+.kk-b-poli nav.seiten { background: var(--paper); border-top: 0; border-bottom: 1px solid var(--line) }
+.kk-b-poli nav.seiten a { color: var(--mute); font: 600 15px/1.2 var(--kk-titel); text-transform: uppercase; letter-spacing: .06em; padding: 12px 14px 9px }
+.kk-b-poli nav.seiten a:hover { color: var(--ink) }
+.kk-b-poli nav.seiten a[aria-current="page"] { color: var(--ink); border-bottom-color: var(--kk-akzent) }
+.kk-b-poli nav.seiten a:focus-visible { outline-color: var(--kk-akzent) }
+
+/* Überschriften in der Titelschrift */
+.kk-b-poli main h2 { font: 700 26px/1.1 var(--kk-titel); text-transform: uppercase; letter-spacing: .02em }
+.kk-b-poli .einleitung h1 { font: 700 clamp(30px, 5vw, 40px)/1.02 var(--kk-titel); text-transform: uppercase; letter-spacing: .01em }
+.kk-b-poli .ueberschrift, .kk-b-poli .diagramm h2 { font: 600 15px/1.2 var(--kk-titel); letter-spacing: .12em; text-transform: uppercase; color: var(--kk-akzent) }
+
+/* Eckige Formen wie im Grundsystem */
+.kk-b-poli .karte, .kk-b-poli .kennzahlen > div, .kk-b-poli .chip, .kk-b-poli .momentaufnahme,
+.kk-b-poli details.insts > summary, .kk-b-poli button, .kk-b-poli .kachel { border-radius: 2px }
+
+/* Fuß: gemeinsamer Abschluss mit Akzentlinie */
+.kk-b-poli footer { margin-top: 40px; background: var(--paper); border-top: 4px solid var(--kk-akzent) }
+.kk-b-poli footer .wrap { border-top: 0; padding: 16px 24px 28px }
+.kk-b-poli footer .kk-satz { flex-basis: 100%; margin: 0; color: var(--mute) }
+.kk-b-poli footer .kk-satz a { color: var(--ink) }
+@media (max-width: 599px) { .kk-b-poli footer .wrap { padding-left: 16px; padding-right: 16px } }

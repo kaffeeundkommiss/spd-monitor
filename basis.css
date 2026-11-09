@@ -1,0 +1,65 @@
+/* Kaffee und Kommiss: gemeinsames Grundsystem aller Bereiche (Variante B, 08.11.2026).
+   Original im Repo kaffeeundkommiss/kaffeeundkommiss.github.io, Kopien in den Bereichs-Repos bitte gleich halten.
+   Jeder Bereich setzt nur --kk-akzent, --kk-akzent-hell, --kk-kopf, --kk-muster und --kk-markierung. */
+:root{
+  --kk-grund:#F3F0E8; --kk-papier:#FFFDF8; --kk-tinte:#23211C; --kk-grau:#625B4E; --kk-linie:#DAD2C2;
+  --kk-schild:rgba(255,253,248,.95); --kk-dimm:transparent;
+  --kk-leiste:#23211C; --kk-leiste-ink:#EDE7DA; --kk-leiste-mute:#B9B1A0;
+  --kk-titel:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
+  --kk-text:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --kk-mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  --kk-max:960px;
+  --kk-akzent:#2C281F; --kk-akzent-hell:#EEE6D6; --kk-kopf:#E9E2D3; --kk-muster:none; --kk-markierung:#CBB18C;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --kk-grund:#1D1B16; --kk-papier:#26231C; --kk-tinte:#ECE5D6; --kk-grau:#B3A891; --kk-linie:#3B362B;
+    --kk-schild:rgba(38,35,28,.95); --kk-dimm:rgba(20,18,14,.5); --kk-leiste:#12110E;
+    --kk-akzent:#CBB18C; --kk-akzent-hell:#3A3427; --kk-kopf:#2E2A22;
+  }
+}
+:root[data-theme="dark"]{
+  --kk-grund:#1D1B16; --kk-papier:#26231C; --kk-tinte:#ECE5D6; --kk-grau:#B3A891; --kk-linie:#3B362B;
+  --kk-schild:rgba(38,35,28,.95); --kk-dimm:rgba(20,18,14,.5); --kk-leiste:#12110E;
+  --kk-akzent:#CBB18C; --kk-akzent-hell:#3A3427; --kk-kopf:#2E2A22;
+}
+
+/* Leiste ganz oben: Rückweg zur Startseite und Wechsel zwischen den Bereichen */
+.kk-leiste{background:var(--kk-leiste);color:var(--kk-leiste-ink);font:500 13px/1.2 var(--kk-text)}
+.kk-leiste .kk-in{max-width:var(--kk-max);margin:0 auto;padding:6px max(16px,env(safe-area-inset-right,0px)) 6px max(16px,env(safe-area-inset-left,0px));
+  display:flex;align-items:center;justify-content:space-between;gap:12px}
+.kk-haus{display:inline-flex;align-items:center;gap:8px;color:inherit;text-decoration:none;font-weight:600;white-space:nowrap;min-height:32px}
+.kk-haus img{width:22px;height:22px;flex:none}
+.kk-bereiche{display:flex;gap:14px}
+.kk-bereiche a{color:var(--kk-leiste-mute);text-decoration:none;white-space:nowrap;padding:8px 0 6px;border-bottom:2px solid transparent}
+.kk-bereiche a:hover{color:var(--kk-leiste-ink)}
+.kk-bereiche a[aria-current]{color:#fff;border-bottom-color:var(--kk-markierung)}
+.kk-leiste a:focus-visible{outline:2px solid var(--kk-markierung);outline-offset:2px}
+.kk-kurz{display:none}
+@media (max-width:520px){ .kk-lang{display:none} .kk-kurz{display:inline} .kk-bereiche{gap:12px} }
+@media (max-width:360px){ .kk-haus span{display:none} }
+
+/* Kopfband mit Bereichsmuster und Schild */
+.kk-kopf{background:linear-gradient(var(--kk-dimm),var(--kk-dimm)),var(--kk-muster),var(--kk-kopf);border-bottom:4px solid var(--kk-akzent)}
+.kk-schild{display:inline-flex;align-items:center;gap:12px;background:var(--kk-schild);padding:10px 16px 10px 12px;border:1px solid var(--kk-linie);color:var(--kk-tinte);text-decoration:none}
+.kk-name{font:700 22px/1.05 var(--kk-titel);text-transform:uppercase;letter-spacing:.04em}
+.kk-unter{font:400 13px/1.35 var(--kk-text);color:var(--kk-grau)}
+
+/* Fuß */
+.kk-fuss{border-top:4px solid var(--kk-akzent);background:var(--kk-papier);color:var(--kk-grau);font:400 13px/1.5 var(--kk-text)}
+.kk-fuss .kk-in{max-width:var(--kk-max);margin:0 auto;padding:14px 16px 28px}
+.kk-fuss p{margin:4px 0}
+.kk-fuss a{color:var(--kk-tinte)}
+
+/* Bereiche: Akzentfarbe, Kopfmuster, Markierung in der Leiste. Klasse am <html>-Element. */
+.kk-b-gesch{--kk-akzent:#AD281D;--kk-akzent-hell:#F3DEDA;--kk-kopf:#E4E6E0;--kk-markierung:#E4533F;--kk-muster:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48'%3E%3Cpath d='M0 .5H48M.5 0V48' stroke='%23AD281D' stroke-opacity='.25'/%3E%3Cpath d='M0 24.5H48M24.5 0V48' stroke='%23787060' stroke-opacity='.14'/%3E%3C/svg%3E")}
+.kk-b-sipo{--kk-akzent:#4C5233;--kk-akzent-hell:#E4E5D6;--kk-kopf:#CBB18C;--kk-markierung:#A4AE7A;--kk-muster:url("tarn.svg")}
+.kk-b-poli{--kk-akzent:#1E4FD8;--kk-akzent-hell:#E3EAFB;--kk-kopf:#ECEEF3;--kk-markierung:#7C9BF0;--kk-muster:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='40'%3E%3Crect y='6' width='78' height='6' fill='%231E4FD8' fill-opacity='.24'/%3E%3Crect y='22' width='54' height='6' fill='%23787060' fill-opacity='.2'/%3E%3Cpath d='M66.5 0V40' stroke='%23C8322B' stroke-opacity='.5' stroke-dasharray='3 3'/%3E%3C/svg%3E")}
+@media (prefers-color-scheme: dark){
+  :root.kk-b-gesch:not([data-theme="light"]),:root:not([data-theme="light"]) .kk-b-gesch{--kk-akzent:#E4533F;--kk-akzent-hell:#3D2420;--kk-kopf:#24221D;--kk-markierung:#E4533F}
+  :root.kk-b-sipo:not([data-theme="light"]),:root:not([data-theme="light"]) .kk-b-sipo{--kk-akzent:#A4AE7A;--kk-akzent-hell:#2F3324;--kk-kopf:#CBB18C;--kk-markierung:#A4AE7A}
+  :root.kk-b-poli:not([data-theme="light"]),:root:not([data-theme="light"]) .kk-b-poli{--kk-akzent:#7C9BF0;--kk-akzent-hell:#1F2740;--kk-kopf:#22242A;--kk-markierung:#7C9BF0}
+}
+:root[data-theme="dark"].kk-b-gesch,:root[data-theme="dark"] .kk-b-gesch{--kk-akzent:#E4533F;--kk-akzent-hell:#3D2420;--kk-kopf:#24221D;--kk-markierung:#E4533F}
+:root[data-theme="dark"].kk-b-sipo,:root[data-theme="dark"] .kk-b-sipo{--kk-akzent:#A4AE7A;--kk-akzent-hell:#2F3324;--kk-kopf:#CBB18C;--kk-markierung:#A4AE7A}
+:root[data-theme="dark"].kk-b-poli,:root[data-theme="dark"] .kk-b-poli{--kk-akzent:#7C9BF0;--kk-akzent-hell:#1F2740;--kk-kopf:#22242A;--kk-markierung:#7C9BF0}
