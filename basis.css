@@ -4,7 +4,7 @@
 :root{
   --kk-grund:#F3F0E8; --kk-papier:#FFFDF8; --kk-tinte:#23211C; --kk-grau:#625B4E; --kk-linie:#DAD2C2;
   --kk-schild:rgba(255,253,248,.95); --kk-dimm:transparent;
-  --kk-leiste:#23211C; --kk-leiste-ink:#EDE7DA; --kk-leiste-mute:#B9B1A0;
+  --kk-leiste:#000000; --kk-leiste-ink:#FFFFFF; --kk-leiste-mute:#BDBDBD;
   --kk-titel:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
   --kk-text:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
   --kk-mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,monospace;
@@ -14,27 +14,28 @@
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
     --kk-grund:#1D1B16; --kk-papier:#26231C; --kk-tinte:#ECE5D6; --kk-grau:#B3A891; --kk-linie:#3B362B;
-    --kk-schild:rgba(38,35,28,.95); --kk-dimm:rgba(20,18,14,.5); --kk-leiste:#12110E;
+    --kk-schild:rgba(38,35,28,.95); --kk-dimm:rgba(20,18,14,.5); --kk-leiste:#000000;
     --kk-akzent:#CBB18C; --kk-akzent-hell:#3A3427; --kk-kopf:#2E2A22;
   }
 }
 :root[data-theme="dark"]{
   --kk-grund:#1D1B16; --kk-papier:#26231C; --kk-tinte:#ECE5D6; --kk-grau:#B3A891; --kk-linie:#3B362B;
-  --kk-schild:rgba(38,35,28,.95); --kk-dimm:rgba(20,18,14,.5); --kk-leiste:#12110E;
+  --kk-schild:rgba(38,35,28,.95); --kk-dimm:rgba(20,18,14,.5); --kk-leiste:#000000;
   --kk-akzent:#CBB18C; --kk-akzent-hell:#3A3427; --kk-kopf:#2E2A22;
 }
 
-/* Leiste ganz oben: Rückweg zur Startseite und Wechsel zwischen den Bereichen */
-.kk-leiste{background:var(--kk-leiste);color:var(--kk-leiste-ink);font:500 13px/1.2 var(--kk-text)}
+/* Leiste ganz oben: Rückweg zur Startseite und Wechsel zwischen den Bereichen.
+   Seit 10.11.2026 auf allen Seiten fest Schwarz-Weiß (schwarze Tasse auf Weiß), unabhängig von Bereich und Modus. */
+.kk-leiste{background:#000;color:#fff;font:500 13px/1.2 var(--kk-text)}
 .kk-leiste .kk-in{max-width:var(--kk-max);margin:0 auto;padding:6px max(16px,env(safe-area-inset-right,0px)) 6px max(16px,env(safe-area-inset-left,0px));
   display:flex;align-items:center;justify-content:space-between;gap:12px}
 .kk-haus{display:inline-flex;align-items:center;gap:8px;color:inherit;text-decoration:none;font-weight:600;white-space:nowrap;min-height:32px}
 .kk-haus img{width:22px;height:22px;flex:none}
 .kk-bereiche{display:flex;gap:14px}
-.kk-bereiche a{color:var(--kk-leiste-mute);text-decoration:none;white-space:nowrap;padding:8px 0 6px;border-bottom:2px solid transparent}
-.kk-bereiche a:hover{color:var(--kk-leiste-ink)}
-.kk-bereiche a[aria-current]{color:#fff;border-bottom-color:var(--kk-markierung)}
-.kk-leiste a:focus-visible{outline:2px solid var(--kk-markierung);outline-offset:2px}
+.kk-bereiche a{color:#BDBDBD;text-decoration:none;white-space:nowrap;padding:8px 0 6px;border-bottom:2px solid transparent}
+.kk-bereiche a:hover{color:#fff}
+.kk-bereiche a[aria-current]{color:#fff;border-bottom-color:#fff}
+.kk-leiste a:focus-visible{outline:2px solid #fff;outline-offset:2px}
 .kk-kurz{display:none}
 @media (max-width:520px){ .kk-lang{display:none} .kk-kurz{display:inline} .kk-bereiche{gap:12px} }
 @media (max-width:360px){ .kk-haus span{display:none} }
