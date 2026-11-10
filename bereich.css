@@ -2,11 +2,13 @@
    Überschreibt Grundfarben, Kopf, Navigation, Fuß und Ecken von index.html, partei.html und programme.html.
    Die Seite hat keinen Dunkelmodus, deshalb bleibt auch das Grundsystem hell. */
 :root.kk-b-poli { --kk-max: 1180px;
-  --bg: #F3F0E8; --paper: #FFFDF8; --ink: #23211C; --mute: #625B4E; --line: #DAD2C2; --rail: #E9E3D7; --hair: #ECE7DD;
-  --keine-bg: #ECE6DA; --r: 2px }
+  --bg: #FFFFFF; --paper: #FFFFFF; --ink: #23211C; --mute: #625B4E; --line: #D6D6D6; --rail: #ECECEC; --hair: #EEEEEE;
+  --keine-bg: #EEEEEE; --r: 2px;
+  /* weiß wie Startseite und Politik-Übersicht (10.11.2026) */
+  --kk-grund: #FFFFFF; --kk-papier: #FFFFFF; --kk-linie: #D6D6D6; --kk-schild: rgba(255,255,255,.96) }
 @media (prefers-color-scheme: dark) { :root.kk-b-poli:not([data-theme="light"]) {
-  --kk-grund: #F3F0E8; --kk-papier: #FFFDF8; --kk-tinte: #23211C; --kk-grau: #625B4E; --kk-linie: #DAD2C2;
-  --kk-schild: rgba(255,253,248,.95); --kk-dimm: transparent; --kk-leiste: #23211C;
+  --kk-grund: #FFFFFF; --kk-papier: #FFFFFF; --kk-tinte: #23211C; --kk-grau: #625B4E; --kk-linie: #D6D6D6;
+  --kk-schild: rgba(255,255,255,.96); --kk-dimm: transparent; --kk-leiste: #23211C;
   --kk-akzent: #1E4FD8; --kk-akzent-hell: #E3EAFB; --kk-kopf: #ECEEF3; --kk-markierung: #7C9BF0; color-scheme: light } }
 
 /* Kopf: Kopfband mit Umfragebalken statt dunklem Balken */
