@@ -9,7 +9,7 @@ Die Instagram-Anbindung (Posts, Faktencheck) wurde entfernt und kann bei Bedarf 
 | Datei | Zweck | Anfassen? |
 |---|---|---|
 | `index.html` | Seite 1: Umfragewerte (eine Datei, kein Framework) | nur bei Design-Änderungen |
-| `partei.html` | Seite 2: Statistiken zur Partei (Wahlergebnisse, Vorsitz, Programme, Themen) | nur bei Design-Änderungen |
+| `partei.html` | Seite 2: Statistiken zur Partei (Wahlergebnisse, Vorsitz, Grundsatzprogramme) | nur bei Design-Änderungen |
 | `monitor-utils.js` | Reine Hilfsfunktionen der Website (getestet mit Vitest) | nur bei Logik-Änderungen |
 | `data.json` | Ebenen (Bund + Länder) mit Wahltermin, Wahltrend, Umfrage-Fallback | Wahltermine/Wahlergebnisse redaktionell pflegen |
 | `partei.json` | Daten der Parteiseite | redaktionell pflegen (siehe unten) |
@@ -85,11 +85,8 @@ Die zweite Seite zeigt die SPD auf Bundesebene seit 1998. Beide Seiten sind übe
 - `wahlen`: je Bundestagswahl `jahr`, `datum` (Wahltag), `ergebnis` (Zweitstimmen in %), `sitze`, `rolle` in der folgenden Wahlperiode (`Regierung`, `Opposition` oder `Nicht im Bundestag` – bestimmt die Farbe), `programm`, `vorsitz`.
 - `vorsitzende`: alle Bundesvorsitzenden seit 1948 mit `nr`, `name`, `beginn` und `ende` (YYYY-MM-DD). Konvention: Ein Amt endet am Wahltag des Nachfolgers, `ende: null` steht nur beim amtierenden Vorsitzenden; dessen Amtszeit rechnet die Seite bis heute. Bei einem Wechsel beim Vorgänger `ende` setzen und einen neuen Eintrag mit `ende: null` anhängen – ein Test prüft, dass die Amtszeiten lückenlos aneinander anschließen. Die Spur „Vorsitz“ in `zeitleiste` ebenfalls nachziehen.
 - `zeitleiste`: Abschnitte mit `spur` (`Rolle im Bund`, `Vorsitz`, `Grundsatzprogramm`, `Neues Programm`), `label`, `von`/`bis` als `YYYY-MM` oder `YYYY-MM-DD` und `status`. `bis: null` heißt „läuft noch“ und reicht bis heute. In der Spur `Rolle im Bund` bestimmt `status` die Farbe wie bei `rolle`; `status: "in Arbeit"` wird blass gezeichnet.
-- `themen`: `jahre` (ein Eintrag je Wahlprogramm, gleiche Reihenfolge wie `wahlen`), `skala` (Bezeichnung der Stufen 0–3) und `liste` mit je `thema`, `gewicht` (eine Zahl 0–3 je Jahr) und `position` (Kurztext je Jahr, erscheint im Tooltip). Die Gewichtung ist eine redaktionelle Einschätzung, keine Inhaltsanalyse.
 
-**Nach einer Bundestagswahl:** einen Eintrag in `wahlen` anhängen, in `themen.jahre` das Jahr ergänzen und bei jedem Thema einen Wert in `gewicht` und `position` anhängen; `stand` aktualisieren. Ein Vitest-Test prüft, dass `wahlen` und `themen.jahre` zusammenpassen und jedes Thema gleich viele Werte hat.
-
-Die Grafik „Verschiebung der Schwerpunkte“ vergleicht den Durchschnitt der Programme bis 2005 mit dem ab 2021 (Grenzen in `partei.html`, Aufruf von `verschiebung()`).
+**Nach einer Bundestagswahl:** einen Eintrag in `wahlen` anhängen und `stand` aktualisieren.
 
 ## Reihenfolge auf der Seite
 

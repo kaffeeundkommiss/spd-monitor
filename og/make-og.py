@@ -4,7 +4,6 @@
 Erzeugt aus den Daten der Seite:
   og/umfragen.png  – Leitzahl Bund, Vergleich zur Bundestagswahl, Zeitverlauf (aus data.json)
   og/partei.png    – Bundestagswahlergebnisse seit 1998 (aus partei.json)
-  og/programme.png – Verschiebung der Themen (nur wenn partei.json["themen"] gefüllt ist)
 
 Braucht Pillow (`pip install pillow`) und ist deshalb, wie icons/make-icons.py, keine
 Abhängigkeit der Website und nicht von update.py (das nur die Standardbibliothek nutzt).
@@ -240,48 +239,6 @@ def bild_partei(partei, pfad):
     c.speichern(pfad)
 
 
-def verschiebung(themen, bis_frueh=2005, ab_heute=2021):
-    """Wie ParteiUtils.verschiebung: Ø ab ab_heute minus Ø bis bis_frueh, absteigend."""
-    jahre = themen["jahre"]
-    zeilen = []
-    for t in themen["liste"]:
-        f = [g for j, g in zip(jahre, t["gewicht"]) if j <= bis_frueh]
-        h = [g for j, g in zip(jahre, t["gewicht"]) if j >= ab_heute]
-        if f and h:
-            zeilen.append((t["thema"], sum(h) / len(h) - sum(f) / len(f)))
-    return sorted(zeilen, key=lambda z: (-z[1], z[0]))
-
-
-def bild_programme(partei, pfad):
-    c = Leinwand()
-    c.kopf("Themen der Wahlprogramme")
-    jahre = partei["themen"]["jahre"]
-    c.text(60, 168, "VERSCHIEBUNG DER SCHWERPUNKTE", HALB(20), GRAU)
-    c.text(60, 214, "Heute wichtiger als 1998–2005", HALB(26), WEISS)
-    c.text(60, 254, f"Ø {jahre[-2]}–{jahre[-1]} minus Ø {jahre[0]}–2005", SANS(22), GRAU)
-    c.text(60, 294, "Skala 0–3, redaktionelle Einschätzung", SANS(22), GRAU)
-
-    zeilen = verschiebung(partei["themen"])
-    gx0, gx1, gy0, gy1 = 820, 1100, 160, 530
-    zh = (gy1 - gy0) / len(zeilen)
-    hi = max(0.5, max(d for _, d in zeilen))
-    lo = min(0, min(d for _, d in zeilen))
-    X = lambda v: gx0 + (v - lo) / (hi - lo) * (gx1 - gx0)
-    for i, (thema, d) in enumerate(zeilen):
-        m = gy0 + i * zh + zh / 2
-        # Links der Achse Platz für den Wert negativer Balken lassen.
-        c.text(gx0 - (12 if lo == 0 else 62), m, thema, SANS(17), WEISS, "rm")
-        f = BLAU if d > 0 else ROT if d < 0 else GRAU
-        x0, x1 = sorted([X(0), X(d)])
-        c.rect(x0, m - zh * 0.3, max(x1, x0 + 2), m + zh * 0.3, f, 3)
-        wert = ("+" if d > 0 else "−" if d < 0 else "±") + fmt(abs(d))
-        c.text((x1 + 8) if d >= 0 else (x0 - 8), m, wert, MONO(16), WEISS, "lm" if d >= 0 else "rm")
-    c.line([(X(0), gy0 - 6), (X(0), gy1 + 6)], WEISS, 1)
-
-    c.fuss(f"Redaktionelle Einschätzung, keine Inhaltsanalyse · Stand {dfmt(partei['stand'])}")
-    c.speichern(pfad)
-
-
 def main():
     with open(os.path.join(ROOT, "data.json"), encoding="utf-8") as f:
         data = json.load(f)
@@ -289,10 +246,6 @@ def main():
         partei = json.load(f)
     bild_umfragen(data, os.path.join(HIER, "umfragen.png"))
     bild_partei(partei, os.path.join(HIER, "partei.png"))
-    if (partei.get("themen") or {}).get("liste"):
-        bild_programme(partei, os.path.join(HIER, "programme.png"))
-    else:
-        print("Keine Themengewichtung in partei.json – og/programme.png nicht erzeugt.")
 
 
 if __name__ == "__main__":
