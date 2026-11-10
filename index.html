@@ -1,0 +1,830 @@
+<!doctype html>
+<html lang="de" class="kk-b-poli">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SPD-Monitor · Umfragewerte</title>
+<meta name="description" content="Aktuelle SPD-Umfragewerte: Bundestagswahl und Landtagswahlen, sortiert nach Wahltermin, im Vergleich zur letzten Wahl.">
+<link rel="canonical" href="https://kaffeeundkommiss.github.io/spd-monitor/">
+<!-- Vorschaukarten für Social Media und Blogs. Bilder erzeugt og/make-og.py (Routine, wöchentlich). -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SPD-Monitor">
+<meta property="og:locale" content="de_DE">
+<meta property="og:title" content="SPD-Monitor · Umfragewerte">
+<meta property="og:description" content="Aktuelle SPD-Umfragewerte: Bundestagswahl und Landtagswahlen, sortiert nach Wahltermin, im Vergleich zur letzten Wahl.">
+<meta property="og:url" content="https://kaffeeundkommiss.github.io/spd-monitor/">
+<meta property="og:image" content="https://kaffeeundkommiss.github.io/spd-monitor/og/umfragen.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="SPD-Wahltrend im Bund im Vergleich zur Bundestagswahl 2025 und 14-Tage-Mittel der letzten 90 Tage">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="SPD-Monitor · Umfragewerte">
+<meta name="twitter:description" content="Aktuelle SPD-Umfragewerte: Bundestagswahl und Landtagswahlen, sortiert nach Wahltermin, im Vergleich zur letzten Wahl.">
+<meta name="twitter:image" content="https://kaffeeundkommiss.github.io/spd-monitor/og/umfragen.png">
+<link rel="icon" href="icons/favicon.ico" sizes="32x32">
+<link rel="icon" href="icons/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+<link rel="apple-touch-icon-precomposed" sizes="180x180" href="icons/apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#23211C">
+<meta name="apple-mobile-web-app-title" content="SPD-Monitor">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="basis.css">
+<style>
+  :root{
+    --bg:#F5F6F2; --paper:#FFFFFF; --ink:#171A21; --mute:#5E6470; --line:#E3E5DE;
+    --rail:#EEF0EA; --hair:#F0F1EC;
+    --ueber:#1E4FD8; --partei:#E3000F; --vorwahl:#171A21;
+    --ok-bg:#E3EAFB; --ok-fg:#163BA3;
+    --bad-bg:#FDECEA; --bad-fg:#8A1C12; --bad-dot:#B42318;
+    --keine-bg:#EEF0EA; --keine-fg:#4A505B;
+    --hinweis-bg:#FBF3CF; --hinweis-fg:#7A4A00;
+    --body:"IBM Plex Sans",system-ui,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,monospace;
+    --max:1180px; --r:14px;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.45}
+  a{color:var(--ueber)} a:hover{color:#163BA3}
+  .wrap{max-width:var(--max);margin:0 auto;padding:0 24px}
+  h2{margin:0;font-size:22px;font-weight:700;letter-spacing:-.01em}
+  .mono{font-family:var(--mono)}
+
+  /* ---------- Kopf ---------- */
+  header.top{background:var(--ink);color:#F5F6F2}
+  header.top .wrap{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;padding-top:18px;padding-bottom:18px}
+  .marke{display:flex;align-items:center;gap:14px}
+  .marke img{width:40px;height:40px;display:block;border-radius:9px}
+  .marke .name{font-weight:700;font-size:20px;letter-spacing:-.01em}
+  .marke .unter{font-size:13px;color:#B9BDC6}
+  .badges{display:flex;flex-wrap:wrap;gap:8px;font-family:var(--mono);font-size:13px}
+  .badges span{padding:6px 10px;border:1px solid #3A3F4B;border-radius:6px;white-space:nowrap}
+  .badge-knopf{font:inherit;padding:6px 10px;border:1px solid #FFFFFF;border-radius:6px;background:transparent;color:#FFFFFF;cursor:pointer;white-space:nowrap}
+  .badge-knopf:hover{background:#FFFFFF;color:#171A21}
+  .momentaufnahme{margin-bottom:20px;padding:12px 16px;border-radius:10px;background:var(--hinweis-bg);color:var(--hinweis-fg);font-size:14px}
+  .momentaufnahme a{color:inherit;font-weight:600}
+  .quelle{margin:12px 0 0;font-size:13px;color:var(--mute)}
+  .quelle a{color:var(--mute)}
+  .abruf{margin:12px 0 0;font-size:13px;color:var(--mute)}
+  .abruf a{color:var(--mute)}
+  .unschaerfe{margin:0;font-size:13px;line-height:1.45;color:var(--mute)}
+  td.wahl .beleg{display:block;font-size:13px;font-weight:400;color:var(--mute);margin-top:2px}
+  td.wahl .beleg a{color:var(--mute)}
+  footer .archiv a{margin-left:6px}
+  nav.seiten{background:var(--ink);border-top:1px solid #2A2E38}
+  nav.seiten .wrap{display:flex;gap:4px}
+  nav.seiten a{color:#B9BDC6;text-decoration:none;font-weight:600;font-size:14px;padding:12px 14px;border-bottom:3px solid transparent}
+  nav.seiten a:hover{color:#F5F6F2}
+  nav.seiten a[aria-current="page"]{color:#F5F6F2;border-bottom-color:var(--partei)}
+  nav.seiten a:focus-visible{outline:2px solid var(--partei);outline-offset:-2px}
+
+  main{max-width:var(--max);margin:0 auto;padding:32px 24px 8px;display:flex;flex-direction:column;gap:40px}
+  .kopfzeile{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px}
+  .kopfzeile .hint{font-size:13px;color:var(--mute)}
+  .karte{background:var(--paper);border:1px solid var(--line);border-radius:var(--r)}
+
+  /* ---------- Balken ---------- */
+  .bar{position:relative;height:10px;background:var(--rail);border-radius:5px}
+  .bar .fill{position:absolute;left:0;top:0;height:100%;width:var(--w);background:var(--c);border-radius:5px}
+  /* Marke: Ergebnis der letzten Wahl derselben Ebene (Position je Balken) */
+  .bar .mark{position:absolute;left:var(--m);top:-5px;bottom:-5px;border-left:2px dashed var(--vorwahl)}
+
+  /* ---------- Bund-Hero ---------- */
+  .hero{padding:28px;display:flex;flex-wrap:wrap;gap:40px}
+  .hero .zahlen{flex:1 1 340px;display:flex;flex-direction:column;gap:20px;min-width:0}
+  .hero .liste{flex:1.3 1 420px;min-width:0;display:flex;flex-direction:column;gap:4px}
+  .ueberschrift{margin:0;font-size:15px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--mute)}
+  .leitzahl{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap}
+  .leitzahl .num{font-family:var(--mono);font-weight:600;font-size:96px;line-height:1;letter-spacing:-.04em}
+  .leitzahl .num .pz{font-size:48px}
+  .leitzahl .delta{display:flex;flex-direction:column;gap:6px}
+  .leitzahl .delta .wert{font-family:var(--mono);font-size:18px;font-weight:600}
+  .leitzahl .delta .wert.ab{color:var(--bad-dot)} .leitzahl .delta .wert.auf{color:var(--ok-fg)}
+  .leitzahl .delta .lbl{font-size:13px;color:var(--mute)}
+  .chip{display:inline-flex;align-self:flex-start;align-items:center;gap:8px;padding:8px 12px;border-radius:8px;font-weight:600;font-size:14px}
+  .chip .dot{width:8px;height:8px;border-radius:50%}
+  .chip.unter{background:var(--bad-bg);color:var(--bad-fg)} .chip.unter .dot{background:var(--bad-dot)}
+  .chip.ueber,.chip.auf{background:var(--ok-bg);color:var(--ok-fg)} .chip.ueber .dot,.chip.auf .dot{background:var(--ueber)}
+  .chip.ohne{background:var(--keine-bg);color:var(--keine-fg)} .chip.ohne .dot{background:var(--keine-fg)}
+  .chip.keine{background:var(--keine-bg);color:var(--keine-fg)} .chip.keine .dot{background:var(--keine-fg)}
+
+  .skala{display:flex;flex-direction:column;gap:8px}
+  .skala .feld{position:relative;height:60px}
+  .skala .bar{position:absolute;left:0;right:0;top:26px;height:12px}
+  .skala .bar .fill{border-radius:6px}
+  .skala .bar .mark{top:-4px;bottom:-14px}
+  /* marklbl und punkt liegen im .bar, ihre top-Werte zählen also ab dessen Oberkante:
+     die Marke 20 px darüber, die Punkte 22 px darunter – so bleibt beides im .feld
+     und läuft weder in den Balken noch in die Achsenbeschriftung. */
+  .skala .marklbl{position:absolute;left:var(--m);top:-24px;transform:translateX(-50%);font-family:var(--mono);font-size:13px;font-weight:600;color:var(--vorwahl);white-space:nowrap}
+  .skala .punkt{position:absolute;top:22px;width:8px;height:8px;border-radius:50%;background:var(--partei);transform:translateX(-50%);box-shadow:0 0 0 2px var(--paper)}
+  .skala .achse{display:flex;justify-content:space-between;font-family:var(--mono);font-size:13px;color:var(--mute)}
+  .skala .legende{font-size:13px;color:var(--mute)}
+
+  .kennzahlen{margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .kennzahlen>div{background:var(--bg);border-radius:10px;padding:12px 14px}
+  .kennzahlen dt{font-size:13px;color:var(--mute)}
+  .kennzahlen dd{margin:2px 0 0;font-family:var(--mono);font-size:22px;font-weight:600}
+
+  .liste .lkopf{display:flex;justify-content:space-between;align-items:baseline;padding-bottom:8px;border-bottom:1px solid var(--line)}
+  .liste .lkopf h3{margin:0;font-size:15px;font-weight:600}
+  .liste .lkopf .skl{font-size:13px;color:var(--mute)}
+  .inst-zeile{display:grid;grid-template-columns:150px 1fr 60px;align-items:center;gap:14px;padding:7px 0;border-bottom:1px solid var(--hair)}
+  .inst-zeile .nam{font-weight:500;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .inst-zeile .dat{font-family:var(--mono);font-size:13px;color:var(--mute)}
+  .inst-zeile .val{font-family:var(--mono);font-weight:600;text-align:right}
+  details.insts>summary{display:none}
+
+  /* ---------- Zeitverlauf ---------- */
+  /* Farben der Seite, nicht eigene: Punkte wie im Hero (--partei), die letzte Wahl wie
+     überall gestrichelt (--vorwahl), die Mittelwertlinie in --ink. */
+  .verlauf{padding:24px 28px}
+  .verlauf h2{font-size:15px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--mute)}
+  .verlauf .sub{margin:6px 0 14px;font-size:13px;color:var(--mute)}
+  .fv-chart{position:relative;min-height:260px;
+    --fv-linie:var(--ink); --fv-punkt:var(--partei); --fv-vorwahl:var(--mute);
+    --fv-gitter:var(--line); --fv-mute:var(--mute)}
+  .fv-chart svg{display:block;width:100%;height:auto;overflow:visible}
+  /* Endwert und Beschriftung der letzten Wahl liegen zwangsläufig über Punkten – ein Rand in
+     Papierfarbe stellt sie frei, statt sie dort hineinzuzeichnen. */
+  .fv-chart .fv-frei{paint-order:stroke fill;stroke:var(--paper);stroke-width:3.5px;stroke-linejoin:round}
+  .fv-leer{min-height:0;font-size:14px;color:var(--mute);padding:8px 0}
+  .fv-quelle{margin:12px 0 0;font-size:13px;color:var(--mute)}
+  .fv-quelle a{color:var(--mute)}
+  .fv-tip{position:absolute;pointer-events:none;display:none;z-index:2;
+    background:var(--paper);border:1px solid var(--line);border-radius:8px;
+    padding:8px 10px;font-size:13px;line-height:1.45;white-space:nowrap;
+    box-shadow:0 4px 14px rgba(23,26,33,.16)}
+  .fv-tip .fv-d{font-family:var(--mono);color:var(--mute);margin-bottom:2px}
+  .fv-tip .fv-m{font-weight:600}
+
+  /* ---------- Anstehende Wahlen ---------- */
+  .kacheln{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+  .kachel{padding:20px;display:flex;flex-direction:column;gap:14px}
+  .kachel .kkopf{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+  .kachel h3{margin:0;font-size:17px;font-weight:600}
+  .kachel .wann{font-size:13px;color:var(--mute)}
+  .kachel .tage{font-family:var(--mono);font-size:13px;font-weight:600;padding:4px 8px;border-radius:6px;background:var(--ink);color:#FFFFFF;white-space:nowrap}
+  .kachel .wert{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .kachel .wert .num{font-family:var(--mono);font-size:40px;font-weight:600;letter-spacing:-.03em;line-height:1}
+  .kachel .pill{font-size:13px;font-weight:600;padding:3px 8px;border-radius:999px}
+  .pill.unter{background:var(--bad-bg);color:var(--bad-fg)}
+  .pill.ueber,.pill.auf{background:var(--ok-bg);color:var(--ok-fg)}
+  .pill.keine,.pill.ohne{background:var(--keine-bg);color:var(--keine-fg)}
+  .kachel .basis{font-size:13px;color:var(--mute)}
+  .notiz{font-size:13px;line-height:1.4;color:var(--keine-fg);background:var(--keine-bg);border-radius:6px;padding:6px 8px}
+  .hinweis{font-size:13px;color:var(--hinweis-fg);background:var(--hinweis-bg);border-radius:6px;padding:6px 8px}
+  .kachel.leer{gap:10px}
+  .kachel.leer .wert .num{font-size:28px;color:var(--mute)}
+
+  /* ---------- Gelaufene Wahlen ---------- */
+  .tabelle{overflow-x:auto}
+  table{width:100%;border-collapse:collapse;font-size:14px;min-width:560px}
+  thead tr{text-align:left;color:var(--mute);font-size:13px;text-transform:uppercase;letter-spacing:.05em}
+  th{padding:14px 20px;font-weight:600}
+  td{padding:14px 20px}
+  tbody tr{border-top:1px solid var(--hair)}
+  td.wahl{font-weight:500}
+  td.mono{font-family:var(--mono);color:var(--mute)}
+  td.erg{font-family:var(--mono);font-weight:600;text-align:right}
+  td.trend{font-family:var(--mono);color:var(--mute);text-align:right}
+  td.vgl{font-family:var(--mono);font-weight:600;text-align:right;white-space:nowrap}
+  td.erg .vgl-kurz{display:none}
+  th.abstand,td.abstand{width:34%}
+
+  footer{margin-top:40px}
+  footer .wrap{border-top:1px solid var(--line);padding:20px 0 48px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;font-size:13px;color:var(--mute)}
+  footer .erklaer{max-width:720px}
+
+  .fehler{padding:20px;font-size:14px;color:var(--bad-fg);background:var(--bad-bg);border-radius:var(--r)}
+
+  /* ---------- Mobil ---------- */
+  @media(max-width:599px){
+    .wrap,main{padding-left:16px;padding-right:16px}
+    main{gap:28px;padding-top:20px}
+    .hero{padding:20px;gap:20px;flex-direction:column}
+    .hero .zahlen,.hero .liste{flex:1 1 auto}
+    .leitzahl .num{font-size:72px}
+    .leitzahl .num .pz{font-size:36px}
+    h2{font-size:20px}
+    details.insts>summary{display:flex;align-items:center;justify-content:center;min-height:44px;padding:0 14px;
+      border:1px solid var(--line);background:var(--bg);border-radius:10px;font-size:14px;font-weight:600;cursor:pointer}
+    details.insts>summary::-webkit-details-marker{display:none}
+    .inst-zeile{grid-template-columns:1fr 52px;gap:4px 12px}
+    .inst-zeile .bar{grid-column:1 / -1}
+    /* Wahlen als schmale Zeilen statt Kacheln */
+    .kacheln{grid-template-columns:1fr;gap:10px}
+    .kachel{padding:14px 16px;display:grid;grid-template-columns:1fr auto;gap:8px 12px;align-items:center}
+    .kachel .kkopf{display:contents}
+    .kachel .tage{justify-self:end;align-self:start}
+    .kachel .wert{grid-column:1 / -1}
+    .kachel .wert .num{font-size:26px}
+    .kachel .bar,.kachel .basis,.kachel .hinweis,.kachel .notiz{grid-column:1 / -1}
+    .verlauf{padding:18px 16px}
+    .fv-chart{min-height:220px}
+    .kachel .basis{display:none}
+    th,td{padding:12px 14px}
+    /* Am Handy passt die Tabelle nur ohne Balkenspalte: der Wert steht ja daneben. */
+    table{min-width:0}
+    th.abstand,td.abstand{display:none}
+    td.mono{white-space:nowrap}
+    td.erg{white-space:nowrap}
+    /* Die Veränderung zur Vorwahl steht am Handy unter dem Ergebnis statt in eigener Spalte. */
+    th.vgl,td.vgl{display:none}
+    #gelaufen-tabelle th,#gelaufen-tabelle td{padding:12px 10px}
+    td.erg .vgl-kurz{display:block;font-size:12px;font-weight:500;color:var(--mute)}
+  }
+</style>
+<link rel="stylesheet" href="bereich.css">
+</head>
+<body>
+<div class="kk-leiste"><div class="kk-in">
+  <a class="kk-haus" href="https://kaffeeundkommiss.github.io/"><img src="kk-tasse.svg" alt="" width="22" height="22"><span>Kaffee und Kommiss</span></a>
+  <nav class="kk-bereiche" aria-label="Bereiche"><a href="https://kaffeeundkommiss.github.io/erster-Weltkrieg/">Geschichte</a><a href="https://kaffeeundkommiss.github.io/bundeswehr-Afghanistan-/"><span class="kk-lang">Sicherheitspolitik</span><span class="kk-kurz">Sicherheit</span></a><a href="https://kaffeeundkommiss.github.io/politik/" aria-current="true">Politik</a></nav>
+</div></div>
+
+<header class="top">
+  <div class="wrap">
+    <div class="marke">
+      <img src="icons/icon.svg" width="40" height="40" alt="">
+      <div>
+        <div class="name">SPD-Monitor</div>
+        <div class="unter">Umfragewerte Bund und Länder</div>
+      </div>
+    </div>
+    <div class="badges">
+      <span id="stand">Stand wird geladen …</span>
+      <button type="button" class="badge-knopf" id="stand-link" hidden title="Link auf diesen Datenstand kopieren – zeigt auch später dieselben Zahlen">Diesen Stand verlinken</button>
+      <span>Quelle: dawum.de</span>
+    </div>
+  </div>
+</header>
+<nav class="seiten" aria-label="Seiten">
+  <div class="wrap">
+    <a href="index.html" aria-current="page">Umfragen</a>
+    <a href="partei.html">Partei</a>
+    <a href="programme.html">Programme</a>
+  </div>
+</nav>
+
+<main>
+  <div class="momentaufnahme" id="momentaufnahme" hidden></div>
+
+  <section id="bund-hero" aria-labelledby="bund-titel" data-teilen="Bundestagswahl"></section>
+
+  <section id="bund-verlauf" class="karte verlauf" aria-labelledby="verlauf-titel" data-teilen="Zeitverlauf Bund" hidden>
+    <h2 id="verlauf-titel">SPD im Zeitverlauf · Bund</h2>
+    <p class="sub" id="verlauf-sub">Punkte: Einzelumfragen · Linie: 14-Tage-Mittel</p>
+    <div id="verlauf-chart" class="fv-chart"></div>
+    <p class="fv-quelle">Quelle: <a href="https://dawum.de/Bundestag/" rel="noopener">dawum.de</a> · 14-Tage-Mittel ungewichtet</p>
+  </section>
+
+  <section id="anstehend" aria-labelledby="anstehend-titel" data-teilen="Anstehende Wahlen">
+    <div class="kopfzeile">
+      <h2 id="anstehend-titel">Anstehende Wahlen</h2>
+      <span class="hint">nächster Termin zuerst</span>
+    </div>
+    <div class="kacheln" id="anstehend-grid" style="margin-top:16px"></div>
+    <p class="quelle">Quelle: <a href="https://dawum.de" rel="noopener">dawum.de</a> (ODbL) · ohne Wahltrend: Ø der neuesten Umfrage je Institut · Vergleich: amtliches Ergebnis der letzten Wahl im Land</p>
+  </section>
+
+  <section id="gelaufen" aria-labelledby="gelaufen-titel" data-teilen="Gelaufene Wahlen" data-quelle="amtliche Endergebnisse der Landeswahlleitungen" hidden>
+    <div class="kopfzeile"><h2 id="gelaufen-titel">Gelaufene Wahlen</h2></div>
+    <div class="karte tabelle" id="gelaufen-tabelle" style="margin-top:16px"></div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p class="kk-satz"><a href="https://kaffeeundkommiss.github.io/">Kaffee und Kommiss</a>: Politik, Geschichte und Sicherheitspolitik mit Quellen. Private, nichtkommerzielle Zusammenstellung.</p>
+    <span class="erklaer">
+      Große Zahl: amtliches Ergebnis, sonst dawum-Wahltrend, sonst Ø der neuesten Umfrage je Institut.
+      Alle Balken 0–50 %, gestrichelte Linie: amtliches Ergebnis der letzten Wahl derselben Ebene.
+    </span>
+    <span class="archiv" id="archiv" hidden></span>
+    <span>
+      Daten: <a href="https://dawum.de" rel="noopener">dawum.de</a> ·
+      Lizenz <a href="https://opendatacommons.org/licenses/odbl/1.0/" rel="noopener">ODbL 1.0</a>
+    </span>
+  </div>
+</footer>
+
+<!-- ?v= bei jeder Änderung an monitor-utils.js hochzählen: sonst kann ein Browser
+     die alte Fassung aus dem Cache zur neuen Seite laden (siehe Notbremse unten). -->
+<script src="monitor-utils.js?v=4"></script>
+<script src="teilen.js?v=2"></script>
+<script>
+(async function(){
+  // Die Seite besteht aus einer HTML- und einer JS-Datei, die zusammengehören. Liefert ein
+  // Cache die alte monitor-utils.js zur neuen index.html, fehlen Funktionen und es käme
+  // eine komplett leere Seite heraus. Deshalb: prüfen, einmal frisch nachladen, und wenn
+  // auch das nicht hilft, den Fehler zeigen statt nichts.
+  const BENOETIGT = ['fmt','dfmt','esc','extractPartei','filterByAge','filterTrend','rowsNachWahl',
+                     'gruppiereEbenen','tageBis','vergleichText','wahlAbgeschlossen',
+                     'verlaufPunkte','gleitendesMittel','mergeVerlauf','isoWoche','unschaerfe'];
+  const fehlende = () => BENOETIGT.filter((n) => typeof (window.MonitorUtils || {})[n] !== 'function');
+
+  function zeigeFehler(text){
+    const el = document.getElementById('bund-hero');
+    if(el) el.innerHTML = '<div class="fehler"><strong>Die Seite konnte nicht geladen werden.</strong><br>'
+      + text + '</div>';
+  }
+
+  if(fehlende().length){
+    console.warn('monitor-utils.js unvollständig (vermutlich aus dem Cache), lade neu:', fehlende());
+    await new Promise((fertig) => {
+      const s = document.createElement('script');
+      s.src = 'monitor-utils.js?frisch=' + Date.now();
+      s.onload = s.onerror = fertig;
+      document.head.appendChild(s);
+    });
+  }
+  if(fehlende().length){
+    zeigeFehler('Eine veraltete Fassung von <code>monitor-utils.js</code> steckt im Cache. '
+      + 'Bitte die Seite neu laden (am Handy: Browser-Cache leeren).');
+    return;
+  }
+
+  // Momentaufnahme: ?stand=2026-KW45 zeigt den damals gespeicherten Stand aus archiv/,
+  // ohne Live-Daten – damit ein Link in einem Blogpost auch später dieselben Zahlen zeigt.
+  const SNAP = (/^\d{4}-KW\d{2}$/.exec(new URLSearchParams(location.search).get('stand') || '') || [null])[0];
+  const DATA_URL = SNAP ? 'archiv/' + SNAP + '.json' : 'data.json?t=' + Date.now();
+  const DAWUM_URL = 'https://api.dawum.de/newest_surveys.json';
+  const MAX_PCT = 50;                      // Skala aller Balken, einheitlich (0–50 %)
+  const {fmt, dfmt, esc, extractPartei, filterByAge, filterTrend, rowsNachWahl,
+         gruppiereEbenen, tageBis, vergleichText, wahlAbgeschlossen,
+         verlaufPunkte, gleitendesMittel, mergeVerlauf, isoWoche, unschaerfe} = MonitorUtils;
+
+  const pz = (v) => fmt(v) + ' %';
+  const breite = (v) => (v == null ? 0 : Math.min(Math.max(v, 0), MAX_PCT) / MAX_PCT * 100).toFixed(2) + '%';
+  // Vergleichswert einer Ebene: amtliches Ergebnis der letzten Wahl ({wert, jahr}).
+  const vw = (ebene) => (ebene && ebene.vorwahl && ebene.vorwahl.wert != null ? ebene.vorwahl : null);
+  // Balken in Parteifarbe; die gestrichelte Marke steht beim Ergebnis der letzten Wahl.
+  const balken = (v, ref, extra) => `<div class="bar" style="--m:${ref ? breite(ref.wert) : '0%'}">
+      <div class="fill" style="--w:${breite(v)};--c:var(--partei)"></div>
+      ${ref ? '<div class="mark"></div>' : ''}${extra || ''}</div>`;
+  // "Landtagswahl Saarland" -> Land "Saarland", Typ "Landtagswahl"
+  const teileName = (name) => {
+    const t = String(name || '').split(' ');
+    return t.length > 1 ? {typ: t[0], land: t.slice(1).join(' ')} : {typ: '', land: name || ''};
+  };
+
+  // ---------- Daten laden (unveränderte Logik) ----------
+  let data = {ebenen: []};
+  const banner = document.getElementById('momentaufnahme');
+  const kwText = (kw) => kw.replace(/^(\d{4})-KW(\d{2})$/, 'KW $2/$1');
+  try {
+    const r = await fetch(DATA_URL, {cache: 'no-store'});
+    if(!r.ok) throw new Error('HTTP ' + r.status);
+    data = await r.json();
+  } catch(e){
+    console.warn('%s nicht ladbar', DATA_URL, e);
+    if(!SNAP){
+      document.getElementById('stand').textContent = 'Daten nicht geladen';
+      zeigeFehler('Die Umfragedaten (<code>data.json</code>) waren nicht abrufbar. '
+        + 'Bitte später erneut laden.');
+      return;
+    }
+    if(SNAP){
+      banner.hidden = false;
+      document.getElementById('stand').textContent = 'Momentaufnahme fehlt';
+      banner.innerHTML = 'Die Momentaufnahme ' + esc(kwText(SNAP)) + ' gibt es nicht. '
+        + '<a href="' + esc(location.pathname) + '">Zur aktuellen Ansicht</a>';
+      return;
+    }
+  }
+  // Bezugstag aller Altersfilter und Countdowns: in einer Momentaufnahme der Tag, an dem
+  // sie entstand, sonst heute.
+  const NOW = SNAP && data.erstellt ? new Date(data.erstellt) : undefined;
+  const KW = isoWoche(data.erstellt);
+  document.getElementById('stand').textContent = SNAP
+    ? 'Momentaufnahme ' + kwText(SNAP)
+    : 'Aktualisiert ' + (data.erstellt ? dfmt(data.erstellt) : 'unbekannt');
+  if(SNAP){
+    banner.hidden = false;
+    banner.innerHTML = 'Momentaufnahme ' + esc(kwText(SNAP)) + ', Datenstand ' + esc(dfmt(data.erstellt))
+      + '. Gezeigt werden die damals gespeicherten Werte, ohne Live-Daten. '
+      + '<a href="' + esc(location.pathname) + '">Zur aktuellen Ansicht</a>';
+  } else if(KW){
+    const knopf = document.getElementById('stand-link');
+    knopf.hidden = false;
+    knopf.addEventListener('click', async () => {
+      const url = location.origin + location.pathname + '?stand=' + KW;
+      try { await navigator.clipboard.writeText(url); knopf.textContent = 'Link kopiert'; }
+      catch(e){ window.prompt('Link auf diesen Datenstand:', url); }
+      setTimeout(() => { knopf.textContent = 'Diesen Stand verlinken'; }, 1800);
+    });
+  }
+  // Frühere Stände im Fuß verlinken (archiv/index.json schreibt update.py).
+  fetch('archiv/index.json', {cache: 'no-store'}).then((r) => r.ok ? r.json() : [])
+    .then((liste) => {
+      const el = document.getElementById('archiv');
+      const kws = (liste || []).filter((k) => /^\d{4}-KW\d{2}$/.test(k)).sort().reverse().slice(0, 8);
+      if(!el || !kws.length) return;
+      el.hidden = false;
+      el.innerHTML = 'Frühere Stände:' + kws.map((k) => '<a href="?stand=' + k + '">' + esc(kwText(k)) + '</a>').join('');
+    }).catch(() => {});
+
+  let db = null;
+  if(!SNAP && (data.ebenen || []).some((e) => !wahlAbgeschlossen(e))){
+    // Zeitbegrenzung (Startwert 6 s): Antwortet dawum nicht, zeigt die Seite die
+    // gespeicherten Werte aus data.json, statt auf die API zu warten.
+    const abbruch = new AbortController();
+    const uhr = setTimeout(() => abbruch.abort(), 6000);
+    try { db = await (await fetch(DAWUM_URL, {signal: abbruch.signal})).json(); }
+    catch(e){ console.warn('dawum live nicht erreichbar, nutze data.json', e); }
+    finally { clearTimeout(uhr); }
+  } // sind alle Wahlen gelaufen, gibt es nichts abzufragen
+
+  // Einzelumfragen je Ebene: live von dawum, sonst der gespeicherte Fallback.
+  function umfragen(ebene){
+    // Ist die Wahl gelaufen und amtlich, ersetzt das Ergebnis die Umfragen: dann hier
+    // nichts mehr abfragen oder auswerten.
+    if(wahlAbgeschlossen(ebene))
+      return {rows: [], live: false, stand: (ebene.wahlergebnis || {}).datum, fertig: true};
+    if(db){
+      const rows = filterByAge(
+        extractPartei(db, (t) => new RegExp(ebene.parlament_regex, 'i').test(t)),
+        ebene.umfrage_max_alter_tage, NOW);
+      return {rows, live: true, stand: db.Database && db.Database.Last_Update};
+    }
+    const fb = ebene.umfragen || {};
+    return {rows: filterByAge(fb.rows || [], ebene.umfrage_max_alter_tage, NOW), live: false, stand: fb.stand};
+  }
+
+  // Leitzahl-Rangfolge: amtliches Ergebnis -> aktueller Wahltrend -> Ø der Umfragen.
+  function leitzahl(ebene, rows){
+    const erg = ebene.wahlergebnis && ebene.wahlergebnis.wert != null ? ebene.wahlergebnis : null;
+    const mittel = erg ? rowsNachWahl(rows, erg.datum) : rows;
+    const avg = mittel.length ? mittel.reduce((s, r) => s + r.wert, 0) / mittel.length : null;
+    const trend = filterTrend(ebene.wahltrend, ebene.wahltrend_max_alter_tage, NOW);
+    if(erg)   return {art: 'ergebnis', wert: erg.wert, erg, avg, anzahl: mittel.length};
+    if(trend) return {art: 'trend', wert: trend.wert, trend, avg, anzahl: mittel.length};
+    return {art: 'avg', wert: avg, avg, anzahl: mittel.length};
+  }
+
+  // Hinweis nur, wenn ein Wahltrend da ist, aber veraltet. Fehlt er ganz (in den Ländern
+  // die Regel), sagt das die Basiszeile ("Ø aus n Umfragen") und der Satz unter den
+  // Kacheln. Ein gelber Kasten in jeder Kachel sah nach Warnung aus und war nur Rauschen.
+  function hinweis(ebene){
+    const t = ebene.wahltrend;
+    if(t && t.wert != null && !filterTrend(t, ebene.wahltrend_max_alter_tage, NOW))
+      return 'Wahltrend vom ' + dfmt(t.stand) + ' – Aktualisierung prüfen';
+    return '';
+  }
+
+  const gruppen = gruppiereEbenen(data.ebenen || [], NOW);
+
+  // ---------- Bund-Hero ----------
+  const heroEl = document.getElementById('bund-hero');
+  const bund = gruppen.bund[0];
+  if(!bund){
+    heroEl.innerHTML = '<div class="fehler">Keine Bundesdaten in data.json gefunden.</div>';
+  } else {
+    const {rows, live, stand} = umfragen(bund);
+    const lz = leitzahl(bund, rows);
+    const ref = vw(bund);
+    const h = vergleichText(lz.wert, ref);
+    const d = lz.art === 'trend' ? lz.trend.delta : null;
+    const werte = rows.map((r) => r.wert);
+    const spanne = werte.length ? fmt(Math.min(...werte)) + '–' + fmt(Math.max(...werte)) + ' %' : '–';
+    const punkte = rows.map((r) =>
+      `<span class="punkt" style="left:${breite(r.wert)}" title="${esc(r.institut)}: ${pz(r.wert)}"></span>`).join('');
+    const hw = hinweis(bund);
+    const moe = unschaerfe(lz.wert, 1000);
+    const standHero = lz.art === 'trend' && lz.trend.stand ? 'Wahltrend vom ' + dfmt(lz.trend.stand)
+      : stand ? 'Stand ' + dfmt(stand) : '';
+    heroEl.dataset.quelle = 'dawum.de (ODbL)';
+    heroEl.dataset.stand = standHero;
+
+    heroEl.innerHTML = `<div class="karte hero">
+      <div class="zahlen">
+        <h2 class="ueberschrift" id="bund-titel">${esc(bund.name)} · ${
+          lz.art === 'trend' ? 'Wahltrend' : lz.art === 'ergebnis' ? 'Amtliches Ergebnis' : 'Ø der Umfragen'}</h2>
+        <div class="leitzahl">
+          <div class="num">${lz.wert == null ? '–' : fmt(lz.wert) + '<span class="pz">%</span>'}</div>
+          ${d != null ? `<div class="delta">
+              <span class="wert ${d < 0 ? 'ab' : 'auf'}">${d < 0 ? '▼' : '▲'} ${fmt(Math.abs(d))}</span>
+              <span class="lbl">zur Vorwoche</span></div>` : ''}
+        </div>
+        <div class="chip ${h.status}"><span class="dot"></span>${esc(h.lang)}</div>
+        ${hw ? `<div class="hinweis">${esc(hw)}</div>` : ''}
+        <div class="skala">
+          <div class="feld">
+            ${balken(lz.wert, ref, (ref ? '<div class="marklbl">Wahl ' + esc(ref.jahr) + ': ' + pz(ref.wert) + '</div>' : '') + punkte)}
+          </div>
+          <div class="achse"><span>0 %</span><span>10 %</span><span>20 %</span><span>30 %</span><span>40 %</span><span>50 %</span></div>
+          <div class="legende">Balken: ${lz.art === 'trend' ? 'Wahltrend' : 'Leitzahl'} · Punkte: Einzelumfragen${ref ? ' · gestrichelt: Ergebnis der Wahl ' + esc(ref.jahr) : ''}</div>
+        </div>
+        <dl class="kennzahlen">
+          <div><dt>Ø neueste Umfrage je Institut</dt><dd>${lz.avg == null ? '–' : pz(lz.avg)}</dd></div>
+          <div><dt>Spanne der Institute</dt><dd>${spanne}</dd></div>
+        </dl>
+        ${moe != null ? `<p class="unschaerfe">Eine Einzelumfrage (rund 1.000 Befragte) schwankt um
+          etwa ±${fmt(moe)} Punkten (Richtwert).${lz.art === 'trend'
+          ? ' Der Wahltrend ist gewichtet und weicht daher leicht vom einfachen Ø ab.' : ''}</p>` : ''}
+        <p class="quelle" style="margin:0">Quelle: <a href="https://dawum.de/${esc(bund.dawum_slug || '')}/" rel="noopener">dawum.de</a>
+          (ODbL)${standHero ? ' · ' + esc(standHero) : ''}</p>
+      </div>
+      <div class="liste">
+        <details class="insts" id="insts">
+          <summary>Alle Institute anzeigen</summary>
+          <div class="lkopf">
+            <h3>Neueste Umfrage je Institut</h3><span class="skl">Skala 0–50 %</span>
+          </div>
+          ${rows.length ? rows.slice().sort((a, b) => (b.datum || '').localeCompare(a.datum || '')).map((r) =>
+            `<div class="inst-zeile">
+               <div><div class="nam">${esc(r.institut)}</div><div class="dat">${dfmt(r.datum)}</div></div>
+               ${balken(r.wert, ref)}
+               <div class="val">${pz(r.wert)}</div>
+             </div>`).join('')
+            : '<p class="basis">Keine Einzelumfragen gefunden.</p>'}
+          <p class="abruf">${live
+            ? 'Live von <a href="https://dawum.de/' + esc(bund.dawum_slug || '') + '/" rel="noopener">dawum.de</a>, Datenbank-Stand ' + dfmt(stand) + '.'
+            : (stand ? 'Gespeicherte Umfragen, abgerufen am ' + dfmt(stand) + '.' : 'Live-Abruf nicht möglich und keine gespeicherten Daten.')}</p>
+        </details>
+      </div>
+    </div>`;
+
+    // Auf dem Desktop ist die Institutsliste offen, auf dem Handy hinter dem Button.
+    const insts = document.getElementById('insts');
+    const breit = window.matchMedia('(min-width:600px)');
+    const anpassen = () => { insts.open = breit.matches; };
+    anpassen();
+    breit.addEventListener('change', anpassen);
+  }
+
+  // ---------- Zeitverlauf Bund ----------
+  // Die Zeitreihe kommt aus data.json (die Routine holt sie wöchentlich aus der
+  // vollständigen dawum-Datenbank). Die ohnehin schon geladenen neuesten Umfragen
+  // werden dazugemischt, damit der rechte Rand zwischen zwei Läufen aktuell ist –
+  // ohne einen zweiten, großen Abruf im Browser.
+  (function zeitverlauf(){
+    const sec = document.getElementById('bund-verlauf');
+    const host = document.getElementById('verlauf-chart');
+    if(!sec || !host || !bund) return;
+    sec.hidden = false;
+
+    const TAGE = (bund.verlauf_tage || 90), FENSTER = 14;
+    const gespeichert = (bund.verlauf || {}).rows || [];
+    const live = db ? extractPartei(db, (t) => new RegExp(bund.parlament_regex, 'i').test(t)) : [];
+    const punkte = verlaufPunkte(mergeVerlauf(gespeichert, live), TAGE, NOW);
+
+    if(punkte.length < 2){
+      host.className = 'fv-leer';
+      host.textContent = 'Zeitverlauf derzeit nicht verfügbar.';
+      return;
+    }
+    const linie = gleitendesMittel(punkte, FENSTER);
+    const sub = document.getElementById('verlauf-sub');
+    if(sub) sub.textContent = `Letzte ${TAGE} Tage · Punkte: Einzelumfragen · `
+      + `Linie: ${FENSTER}-Tage-Mittel`;
+
+    const NS = 'http://www.w3.org/2000/svg';
+    const el = (n, a, eltern) => { const e = document.createElementNS(NS, n);
+      for(const k in a) e.setAttribute(k, a[k]); if(eltern) eltern.appendChild(e); return e; };
+    const tip = document.createElement('div'); tip.className = 'fv-tip';
+    // Kein eigener Formatierer: die Zeitstempel der Zeitreihe sind UTC-Mitternacht,
+    // und dfmt() ist die eine Stelle, die ein reines Datum zeitzonenfest anzeigt.
+    const dfmKurz = (t) => dfmt(new Date(t).toISOString().slice(0, 10));
+
+    function zeichne(){
+      host.replaceChildren();
+      const schmal = host.clientWidth < 420;
+      const W = Math.max(280, host.clientWidth), H = schmal ? 220 : 260;
+      const ml = 32, mr = schmal ? 48 : 50, mt = 14, mb = 24;
+      // Die y-Achse umfasst nur den Bereich der Werte plus Rand, das Ergebnis der letzten
+      // Wahl immer eingeschlossen. Es ist ein Liniendiagramm, kein Balken: eine Achse,
+      // die nicht bei 0 beginnt, verzerrt hier keine Flächen.
+      const ref = vw(bund);
+      const werte = punkte.map((p) => p.v).concat(ref ? [ref.wert] : []);
+      const yMin = Math.max(0, Math.floor(Math.min(...werte)) - 1);
+      const yMax = Math.max(yMin + 4, Math.ceil(Math.max(...werte)) + 1);
+      // Die Achse spannt das ganze Fenster, nicht nur die vorhandenen Daten: sonst
+      // schrumpft sie mit dünner Datenlage stillschweigend zusammen, der Zeitraum
+      // stimmt nicht mehr mit der Beschriftung überein, und es bleibt womöglich nur
+      // eine einzige Monatsgrenze zur Einordnung übrig.
+      const jetzt = NOW || new Date();
+      const x1 = Date.UTC(jetzt.getUTCFullYear(), jetzt.getUTCMonth(), jetzt.getUTCDate());
+      const x0 = x1 - TAGE * 864e5;
+      const X = (t) => ml + (t - x0) / (x1 - x0) * (W - ml - mr);
+      const Y = (v) => H - mb - (v - yMin) / (yMax - yMin) * (H - mt - mb);
+      const svg = el('svg', {viewBox: `0 0 ${W} ${H}`, role: 'img',
+        'aria-label': `SPD-Umfragewerte Bund der letzten ${TAGE} Tage, aktuelles `
+          + `${FENSTER}-Tage-Mittel ${fmt(linie[linie.length - 1].v)} Prozent`}, host);
+      host.appendChild(tip);
+
+      const schritt = yMax - yMin > 8 ? 2 : 1;
+      for(let v = yMin; v <= yMax; v += schritt){
+        el('line', {x1: ml, x2: W - mr, y1: Y(v), y2: Y(v), stroke: 'var(--fv-gitter)'}, svg);
+        el('text', {x: ml - 6, y: Y(v), dy: '0.32em', 'text-anchor': 'end',
+          'font-size': 12, fill: 'var(--fv-mute)'}, svg).textContent = v + ' %';
+      }
+      const monatsX = [];
+      const m = new Date(x0); m.setUTCDate(1); m.setUTCMonth(m.getUTCMonth() + 1);
+      for(; +m <= x1; m.setUTCMonth(m.getUTCMonth() + 1)){
+        monatsX.push(X(+m));
+        el('line', {x1: X(+m), x2: X(+m), y1: mt, y2: H - mb,
+          stroke: 'var(--fv-gitter)'}, svg);
+        el('text', {x: X(+m), y: H - 6, 'text-anchor': 'middle', 'font-size': 12,
+          fill: 'var(--fv-mute)'}, svg).textContent =
+          m.toLocaleDateString('de-DE', {month: 'long', timeZone: 'UTC'})
+            .slice(0, schmal ? 3 : 20);
+      }
+      // Fensterränder benennen – aber nur, wenn genug Abstand zur nächsten
+      // Monatsbeschriftung bleibt. Wie weit die erste Monatsgrenze vom Fensteranfang
+      // entfernt liegt, hängt vom Kalender ab; ohne Prüfung überlagern sich die
+      // beiden auf schmalen Schirmen zu Unlesbarem.
+      const platz = schmal ? 38 : 62;
+      const rand = (t, anker, txt) => el('text', {x: X(t), y: H - 6, 'text-anchor': anker,
+        'font-size': 12, fill: 'var(--fv-mute)'}, svg).textContent = txt;
+      if(!monatsX.length || monatsX[0] - X(x0) >= platz)
+        rand(x0, 'start', new Date(x0).toLocaleDateString('de-DE',
+          {day: '2-digit', month: '2-digit', timeZone: 'UTC'}));
+      if(!monatsX.length || X(x1) - monatsX[monatsX.length - 1] >= platz)
+        rand(x1, 'end', 'heute');
+
+      if(ref) el('line', {x1: ml, x2: W - mr, y1: Y(ref.wert), y2: Y(ref.wert), stroke: 'var(--fv-vorwahl)',
+        'stroke-width': 1.5, 'stroke-dasharray': '5 4'}, svg);
+
+      // Mit hellem Rand: so bleiben übereinanderliegende Umfragen unterscheidbar.
+      punkte.forEach((p) => el('circle', {cx: X(p.t), cy: Y(p.v), r: 3.5,
+        fill: 'var(--fv-punkt)', 'fill-opacity': .6, stroke: 'var(--paper)', 'stroke-width': 1}, svg));
+      el('path', {d: 'M' + linie.map((p) => `${X(p.t).toFixed(1)},${Y(p.v).toFixed(1)}`).join('L'),
+        fill: 'none', stroke: 'var(--fv-linie)', 'stroke-width': 2,
+        'stroke-linecap': 'round', 'stroke-linejoin': 'round'}, svg);
+
+      // Beschriftung der letzten Wahl erst nach den Punkten zeichnen: so liegt ihr Hof
+      // über den Umfragepunkten und die Angabe bleibt auch am Handy lesbar.
+      if(ref) el('text', {x: ml + 4, y: Y(ref.wert) - 6, 'font-size': 12, 'font-weight': 600,
+        class: 'fv-frei', fill: 'var(--fv-vorwahl)'}, svg).textContent = 'Wahl ' + ref.jahr + ': ' + fmt(ref.wert) + ' %';
+
+      const letzte = linie[linie.length - 1];
+      el('text', {x: Math.min(X(letzte.t) + 6, W - 4), y: Y(letzte.v), dy: '0.32em',
+        'text-anchor': X(letzte.t) + 6 > W - mr + 4 ? 'end' : 'start',
+        'font-size': 12, 'font-weight': 600, 'font-family': 'var(--mono)',
+        class: 'fv-frei', fill: 'var(--fv-linie)'}, svg).textContent = fmt(letzte.v) + ' %';
+
+      const lot = el('line', {y1: mt, y2: H - mb, stroke: 'var(--fv-mute)',
+        'stroke-opacity': .5, visibility: 'hidden'}, svg);
+      const kugel = el('circle', {r: 4.5, fill: 'var(--fv-linie)', visibility: 'hidden'}, svg);
+      const flaeche = el('rect', {x: ml, y: 0, width: Math.max(1, W - ml - mr), height: H - mb,
+        fill: 'transparent'}, svg);
+
+      const zeigen = (ev) => {
+        const r = svg.getBoundingClientRect(), s = W / r.width;
+        const t = x0 + ((ev.clientX - r.left) * s - ml) / (W - ml - mr) * (x1 - x0);
+        const p = linie.reduce((a, b) => Math.abs(b.t - t) < Math.abs(a.t - t) ? b : a);
+        lot.setAttribute('x1', X(p.t)); lot.setAttribute('x2', X(p.t));
+        lot.setAttribute('visibility', 'visible');
+        kugel.setAttribute('cx', X(p.t)); kugel.setAttribute('cy', Y(p.v));
+        kugel.setAttribute('visibility', 'visible');
+        tip.replaceChildren();
+        const zeile = (txt, cls) => { const z = document.createElement('div');
+          if(cls) z.className = cls; z.textContent = txt; tip.appendChild(z); };
+        zeile(dfmKurz(p.t), 'fv-d');
+        zeile(`${FENSTER}-Tage-Mittel: ${fmt(p.v)} % (${p.n} Umfr.)`, 'fv-m');
+        punkte.filter((q) => q.t === p.t).forEach((q) => zeile(`${q.institut}: ${fmt(q.v)} %`));
+        tip.style.display = 'block';
+        const px = X(p.t) / s, py = Y(p.v) / s, b = tip.offsetWidth, h = tip.offsetHeight;
+        tip.style.left = Math.max(0, Math.min(r.width - b,
+          px + 12 > r.width - b ? px - b - 12 : px + 12)) + 'px';
+        // Oberhalb des Punktes, solange dort Platz ist – sonst darunter. Auf schmalen
+        // Schirmen deckte der Kasten sonst die Hürdenlinie und die Achse zu.
+        tip.style.top = (py - h - 10 >= 0 ? py - h - 10
+          : Math.min(r.height - h, py + 14)) + 'px';
+      };
+      const weg = () => { tip.style.display = 'none';
+        lot.setAttribute('visibility', 'hidden'); kugel.setAttribute('visibility', 'hidden'); };
+      // Maus: folgen und beim Verlassen ausblenden. Touch: Antippen zeigt den Wert, und er
+      // bleibt stehen – auf Touch feuert pointerleave direkt nach dem Loslassen, der
+      // Kasten verschwand dadurch sofort wieder. Ausgeblendet wird bei Tipp daneben.
+      flaeche.addEventListener('pointermove', zeigen);
+      flaeche.addEventListener('pointerdown', zeigen);
+      const wegMaus = (ev) => { if(ev.pointerType === 'mouse') weg(); };
+      flaeche.addEventListener('pointerleave', wegMaus);
+      svg.addEventListener('pointerleave', wegMaus);
+      ausblenden = (ev) => { if(!svg.contains(ev.target)) weg(); };
+    }
+
+    // Tipp neben das Diagramm blendet aus. Einmal registriert und auf das jeweils aktuelle
+    // Diagramm umgebogen: zeichne() läuft bei jeder Größenänderung neu.
+    let ausblenden = null;
+    document.addEventListener('pointerdown', (ev) => { if(ausblenden) ausblenden(ev); });
+    zeichne();
+    let t; window.addEventListener('resize', () => { clearTimeout(t); t = setTimeout(zeichne, 150); });
+  })();
+
+  // ---------- Anstehende Wahlen ----------
+  const grid = document.getElementById('anstehend-grid');
+  const anstehend = gruppen.anstehend.concat(gruppen.ohneTermin);
+  grid.innerHTML = anstehend.map((e) => {
+    const {rows} = umfragen(e);
+    const lz = leitzahl(e, rows);
+    const ref = vw(e);
+    const h = vergleichText(lz.wert, ref);
+    const {typ, land} = teileName(e.name);
+    const tage = tageBis(e.wahltermin, NOW);
+    const leer = !rows.length && lz.wert == null;
+    // Erklärt data.json, warum es hier keine Werte gibt (z. B. die Partei wird in diesem
+    // Land nicht separat ausgewiesen), dann sagt die Kachel das – statt "keine Daten"
+    // zu zeigen, was nach einer Lücke oder einem Fehler aussieht.
+    const datenhinweis = leer ? (e.datenhinweis || '') : '';
+    // Der Wahltrend-Hinweis wäre daneben nur Rauschen: ohne ausgewiesene Werte kann
+    // dawum gar keinen Trend bilden.
+    const hw = datenhinweis ? '' : hinweis(e);
+    // Ein Wert aus ein, zwei Umfragen sieht in der Kachel so fest aus wie ein Wahltrend.
+    // Das muss an der Zahl stehen (auch am Handy, wo die Basiszeile ausgeblendet ist),
+    // sonst geht es beim Teilen eines Screenshots verloren.
+    const duenn = lz.art === 'avg' && rows.length > 0 && rows.length <= 2
+      ? 'Nur ' + (rows.length === 1 ? 'eine Umfrage' : 'zwei Umfragen') + ' – wenig belastbar' : '';
+    const basis = lz.art === 'trend'
+      ? 'Wahltrend' + (lz.avg != null ? ' · Ø neueste Umfragen ' + pz(lz.avg) : '')
+      : rows.length
+        ? 'Ø aus ' + rows.length + (rows.length === 1 ? ' Umfrage' : ' Umfragen')
+        : datenhinweis ? '' : 'Noch keine Umfragen bei dawum.';
+    return `<article class="karte kachel${leer ? ' leer' : ''}" id="kachel-${esc(e.id)}">
+      <div class="kkopf">
+        <div>
+          <h3>${esc(land)}</h3>
+          <div class="wann">${esc(typ)}${e.wahltermin ? ' · ' + dfmt(e.wahltermin) : ''}</div>
+        </div>
+        ${tage != null ? `<span class="tage">in ${tage} T.</span>` : ''}
+      </div>
+      <div class="wert">
+        <span class="num">${lz.wert == null ? '–' : pz(lz.wert)}</span>
+        <span class="pill ${h.status}">${esc(datenhinweis ? 'nicht ausgewiesen' : h.kurz)}</span>
+      </div>
+      ${leer ? '' : balken(lz.wert, ref)}
+      ${basis ? `<div class="basis">${basis}</div>` : ''}
+      ${datenhinweis ? `<div class="notiz">${esc(datenhinweis)}</div>` : ''}
+      ${duenn ? `<div class="notiz duenn">${esc(duenn)}</div>` : ''}
+      ${hw ? `<div class="hinweis">${esc(hw)}</div>` : ''}
+    </article>`;
+  }).join('');
+
+  // ---------- Gelaufene Wahlen ----------
+  const gelaufen = gruppen.gelaufen;
+  if(gelaufen.length){
+    document.getElementById('gelaufen').hidden = false;
+    // Die Trend-Spalte nur zeigen, wenn es überhaupt einen Wert gibt – sonst ist sie eine
+    // Spalte voller Striche, die am Handy die Tabelle sprengt.
+    const mitTrend = gelaufen.some((e) => (e.wahltrend || {}).wert != null);
+    document.getElementById('gelaufen-tabelle').innerHTML = `<table>
+      <thead><tr>
+        <th>Wahl</th><th>Datum</th>
+        <th style="text-align:right">Ergebnis</th>
+        ${mitTrend ? '<th style="text-align:right">Letzter Trend</th>' : ''}
+        <th class="vgl" style="text-align:right">Zur Vorwahl</th>
+        <th class="abstand">Ergebnis und Vorwahl</th>
+      </tr></thead>
+      <tbody>${gelaufen.map((e) => {
+        const lz = leitzahl(e, umfragen(e).rows);   // dieselbe Rangfolge wie oben
+        const erg = e.wahlergebnis || {};
+        const t = e.wahltrend || {};
+        const q = erg.quelle || {};
+        // Veränderung zum Ergebnis der Wahl davor, in Prozentpunkten.
+        const vgl = vw(e) && lz.wert != null
+          ? (lz.wert - vw(e).wert < 0 ? '−' : '+') + fmt(Math.abs(lz.wert - vw(e).wert)) : '';
+        const beleg = q.url && /^https:\/\//.test(q.url)
+          ? `<span class="beleg">Quelle: <a href="${esc(q.url)}" rel="noopener">${esc(q.name || 'amtliches Ergebnis')}</a></span>` : '';
+        return `<tr id="zeile-${esc(e.id)}">
+          <td class="wahl">${esc(teileName(e.name).land)}${beleg}</td>
+          <td class="mono">${dfmt(e.wahltermin)}</td>
+          <td class="erg">${lz.wert != null ? pz(lz.wert) + (erg.vorlaeufig ? ' *' : '') : '–'}${vgl
+            ? '<span class="vgl-kurz">' + vgl + ' zu ' + esc(vw(e).jahr) + '</span>' : ''}</td>
+          ${mitTrend ? `<td class="trend">${t.wert != null ? pz(t.wert) : '–'}</td>` : ''}
+          <td class="vgl" title="${vgl ? 'Wahl ' + esc(vw(e).jahr) + ': ' + pz(vw(e).wert) : ''}">${vgl || '–'}</td>
+          <td class="abstand" title="${lz.avg != null ? 'Ø der Umfragen nach der Wahl: ' + pz(lz.avg) : ''}">${balken(lz.wert, vw(e))}</td>
+        </tr>`;
+      }).join('')}</tbody></table>
+      ${gelaufen.some((e) => (e.wahlergebnis || {}).vorlaeufig)
+        ? '<p class="basis" style="padding:0 20px 14px">* vorläufiges amtliches Ergebnis</p>' : ''}`;
+  }
+
+  // Link- und Bild-Knöpfe erst jetzt: die Abschnitte sind gerendert, und ein #Anker
+  // aus einem geteilten Link kann angesprungen werden.
+  if(window.Teilen) Teilen.init({
+    quelle: 'dawum.de (ODbL)',
+    stand: SNAP ? 'Momentaufnahme ' + kwText(SNAP) : data.erstellt ? 'Stand ' + dfmt(data.erstellt) : '',
+  });
+})().catch((e) => {
+  // Letzte Instanz: lieber eine erklärte Fehlermeldung als eine leere Seite.
+  console.error('SPD-Monitor:', e);
+  const el = document.getElementById('bund-hero');
+  if(el){
+    el.innerHTML = '<div class="fehler"><strong>Die Seite konnte nicht geladen werden.</strong><br></div>';
+    const box = el.querySelector('.fehler');
+    if(box){
+      const detail = (e && e.message ? e.message : e);
+      box.appendChild(document.createTextNode('Technischer Hinweis: ' + detail));
+    }
+  }
+});
+</script>
+</body>
+</html>
