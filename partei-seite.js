@@ -1,4 +1,4 @@
-/* Gemeinsames Skript von partei.html und programme.html (Daten: partei.json).
+/* Skript von partei.html (Daten: partei.json).
    Jede Seite enthält nur einen Teil der Abschnitte; was fehlt, wird übersprungen. */
 (async function(){
   const {fmt, dfmt, esc} = window.MonitorUtils || {};
@@ -199,87 +199,14 @@
       balken.filter((b) => b.spur === s).map((b) => esc(b.label)).join(' · ')}</dd>`).join('');
   }
 
-  // ---------- Themengewichtung ----------
-  const DECKKRAFT = [0, .2, .55, 1];
-  function themen(){
-    const host = document.getElementById('chart-themen'); host.replaceChildren();
-    const {jahre, liste, skala} = d.themen;
-    const W = Math.max(280, host.clientWidth), schmal = W < 560;
-    const svg = el('svg', {role: 'img', 'aria-label': 'Themengewichtung je Wahlprogramm'}, host);
-    // Am Handy stehen die Themen über ihrer Zeile statt links daneben: sonst bleiben
-    // für acht Spalten nur ein paar Pixel, und die Jahreszahlen laufen ineinander.
-    const gestapelt = W < 480;
-    const ml = gestapelt ? 0 : textBreite(svg, liste.map((t) => t.thema), 'stark') + 10;
-    const mt = 22, kz = gestapelt ? 18 : 0, zh = 32, zeile = kz + zh;
-    const H = mt + liste.length * zeile;
-    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
-    const sp = (W - ml) / jahre.length, lu = 2;
-    const tip = tooltip(host);
-    jahre.forEach((j, c) => txt(svg, {x: ml + c * sp + sp / 2, y: mt - 8, 'text-anchor': 'middle'}, schmal ? "'" + String(j).slice(2) : j));
-    liste.forEach((t, z) => {
-      const y = mt + z * zeile + kz;
-      if(gestapelt) txt(svg, {x: 2, y: y - 5, class: 'stark'}, t.thema);
-      else txt(svg, {x: ml - 10, y: y + zh / 2, dy: '0.32em', 'text-anchor': 'end', class: 'stark'}, t.thema);
-      t.gewicht.forEach((g, c) => {
-        const x = ml + c * sp;
-        const r = el('rect', {x: x + lu, y: y + lu, width: sp - 2 * lu, height: zh - 2 * lu, rx: 3,
-          fill: 'var(--ueber)', 'fill-opacity': DECKKRAFT[g] ?? 0,
-          stroke: g === 0 ? 'var(--opp)' : 'none', 'stroke-dasharray': '3 2'}, svg);
-        hover(r, tip, (ev) => tip.zeige(ev, t.thema + ' · ' + jahre[c], [g + ' – ' + skala[g], t.position[c]]));
-        const w = txt(svg, {x: x + sp / 2, y: y + zh / 2, dy: '0.32em', 'text-anchor': 'middle',
-          class: 'wert', 'pointer-events': 'none'}, g);
-        w.style.fill = g === 3 ? '#FFFFFF' : g === 0 ? 'var(--mute)' : 'var(--ink)';
-      });
-    });
-    legende('legende-themen', skala.map((s, i) => [
-      i ? `rgba(30,79,216,${DECKKRAFT[i]})` : 'transparent', i + ' ' + s,
-      i ? null : {border: '1px dashed var(--opp)'}]));
-  }
-
-  // ---------- Verschiebung ----------
-  function shift(){
-    const host = document.getElementById('chart-shift'); host.replaceChildren();
-    const rows = PU.verschiebung(d.themen, 2005, 2021);
-    const W = Math.max(280, host.clientWidth), schmal = W < 560;
-    const svg = el('svg', {role: 'img', 'aria-label': 'Veränderung der Themengewichtung: '
-      + rows.map((r) => r.thema + ' ' + sign(r.differenz)).join(', ')}, host);
-    const ml = textBreite(svg, rows.map((r) => r.thema), 'stark') + 12, mr = schmal ? 6 : 96, mt = 26, zh = 32;
-    const H = mt + rows.length * zh + 4;
-    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
-    // Achse nur so weit, wie die Daten reichen: Sind fast alle Werte positiv, bekäme
-    // eine symmetrische Achse eine leere linke Hälfte und halb so lange Balken.
-    const lo = Math.min(0, ...rows.map((r) => r.differenz)), hi = Math.max(0.5, ...rows.map((r) => r.differenz));
-    const padL = lo < 0 ? 44 : 4, padR = 44;
-    const X = (v) => ml + padL + (v - lo) / (hi - lo) * (W - ml - mr - padL - padR);
-    const tip = tooltip(host);
-    txt(svg, {x: X(0) - 8, y: 12, 'text-anchor': 'end', fill: 'var(--huerde)'}, '← weniger Gewicht');
-    txt(svg, {x: X(0) + 8, y: 12, fill: 'var(--ueber)'}, 'mehr Gewicht →');
-    if(!schmal) txt(svg, {x: W, y: 12, 'text-anchor': 'end'}, 'früher → heute');
-    rows.forEach((r, i) => {
-      const y = mt + i * zh, m = y + zh / 2, f = r.differenz > 0 ? 'var(--ueber)' : r.differenz < 0 ? 'var(--huerde)' : 'var(--opp)';
-      txt(svg, {x: ml - 10, y: m, dy: '0.32em', 'text-anchor': 'end', class: 'stark'}, r.thema);
-      const x0 = Math.min(X(0), X(r.differenz));
-      const b = el('rect', {x: x0, y: y + 6, width: Math.max(2, Math.abs(X(r.differenz) - X(0))), height: zh - 12, rx: 4, fill: f}, svg);
-      hover(b, tip, (ev) => tip.zeige(ev, r.thema, ['Veränderung: ' + sign(r.differenz),
-        '1998–2005: ' + fmt(r.frueh), '2021–2025: ' + fmt(r.heute)]));
-      const w = txt(svg, {x: r.differenz >= 0 ? X(r.differenz) + 6 : X(r.differenz) - 6, y: m, dy: '0.32em',
-        'text-anchor': r.differenz >= 0 ? 'start' : 'end', class: 'wert'}, sign(r.differenz));
-      w.style.fill = f;
-      if(!schmal) txt(svg, {x: W, y: m, dy: '0.32em', 'text-anchor': 'end'}, fmt(r.frueh) + ' → ' + fmt(r.heute));
-    });
-    el('line', {x1: X(0), x2: X(0), y1: mt - 6, y2: H, stroke: 'var(--ink)'}, svg);
-    legende('legende-shift', [['var(--ueber)', 'Heute wichtiger als 1998–2005'], ['var(--huerde)', 'Heute weniger wichtig']]);
-  }
-
   // Jede Seite zeichnet nur die Diagramme, die sie enthält.
-  const diagramme = [['chart-wahlen', wahlen], ['chart-zeit', zeitleiste], ['chart-vorsitz', vorsitzChart],
-                     ['chart-themen', themen], ['chart-shift', shift]];
+  const diagramme = [['chart-wahlen', wahlen], ['chart-zeit', zeitleiste], ['chart-vorsitz', vorsitzChart]];
   const alles = () => diagramme.forEach(([id, f]) => { if($(id)) f(); });
   alles();
   if(window.Teilen) Teilen.init({quelle: 'redaktionell zusammengestellt', stand: d.stand ? 'Stand ' + dfmt(d.stand) : ''});
   let t; window.addEventListener('resize', () => { clearTimeout(t); t = setTimeout(alles, 150); });
 })().catch((e) => {
-  console.error('SPD-Monitor (Partei/Programme):', e);
+  console.error('SPD-Monitor (Partei):', e);
   const el = document.getElementById('kennzahlen') || document.querySelector('main section');
   if(el) el.innerHTML = '<div class="fehler"><strong>Die Seite konnte nicht geladen werden.</strong><br>'
     + 'Technischer Hinweis: ' + String(e && e.message ? e.message : e).replace(/[&<>]/g, '') + '</div>';

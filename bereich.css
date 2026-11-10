@@ -1,5 +1,5 @@
 /* Bereichsnote Politik im Grundsystem Kaffee und Kommiss (basis.css): Blau, Umfragebalken im Kopfband, gelbes Signet.
-   Überschreibt Grundfarben, Kopf, Navigation, Fuß und Ecken von index.html, partei.html und programme.html.
+   Überschreibt Grundfarben, Kopf, Navigation, Fuß und Ecken von index.html und partei.html.
    Die Seite hat keinen Dunkelmodus, deshalb bleibt auch das Grundsystem hell. */
 :root.kk-b-poli { --kk-max: 1180px;
   --bg: #FFFFFF; --paper: #FFFFFF; --ink: #23211C; --mute: #625B4E; --line: #D6D6D6; --rail: #ECECEC; --hair: #EEEEEE;

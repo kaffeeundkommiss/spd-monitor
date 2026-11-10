@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import fs from "node:fs";
 import path from "node:path";
-import { kennzahlen, verschiebung, monat, zeitBalken, amtszeiten, amtsKennzahlen } from "../partei-utils.js";
+import { kennzahlen, monat, zeitBalken, amtszeiten, amtsKennzahlen } from "../partei-utils.js";
 
 const WAHLEN = [
   { jahr: 2009, ergebnis: 14.6 },
@@ -30,28 +30,6 @@ describe("kennzahlen", () => {
   it("returns null without results", () => {
     expect(kennzahlen([])).toBeNull();
     expect(kennzahlen(null)).toBeNull();
-  });
-});
-
-describe("verschiebung", () => {
-  const themen = {
-    jahre: [1998, 2005, 2021, 2025],
-    liste: [
-      { thema: "Steigt", gewicht: [0, 1, 3, 3] },
-      { thema: "Fällt", gewicht: [2, 2, 1, 1] },
-      { thema: "Gleich", gewicht: [2, 2, 2, 2] },
-    ],
-  };
-
-  it("averages both periods and sorts by change, largest increase first", () => {
-    const r = verschiebung(themen, 2005, 2021);
-    expect(r.map((x) => x.thema)).toEqual(["Steigt", "Gleich", "Fällt"]);
-    expect(r[0]).toMatchObject({ frueh: 0.5, heute: 3, differenz: 2.5 });
-    expect(r[2].differenz).toBe(-1);
-  });
-
-  it("drops topics without values in one of the periods", () => {
-    expect(verschiebung(themen, 1990, 2021)).toEqual([]);
   });
 });
 
@@ -106,17 +84,6 @@ describe("amtszeiten / amtsKennzahlen", () => {
 describe("partei.json", () => {
   const d = JSON.parse(fs.readFileSync(path.join(import.meta.dirname, "..", "partei.json"), "utf-8"));
 
-  // Die Themenauswertung ist für die SPD noch nicht erstellt (programme.html sagt das).
-  // Sobald sie in partei.json steht, gelten dieselben Regeln wie beim FDP-Monitor.
-  const mitThemen = !!(d.themen && d.themen.liste);
-
-  it.skipIf(!mitThemen)("has one weight and one position per programme year for every topic", () => {
-    for (const t of d.themen.liste) {
-      expect(t.gewicht).toHaveLength(d.themen.jahre.length);
-      expect(t.position).toHaveLength(d.themen.jahre.length);
-      for (const g of t.gewicht) expect(g >= 0 && g < d.themen.skala.length).toBe(true);
-    }
-  });
 
   it("lists chairs in order without overlap (gaps = Tod oder kommissarische Zeit, im Beleghinweis genannt)", () => {
     const v = d.vorsitzende;
@@ -134,9 +101,5 @@ describe("partei.json", () => {
       expect(z.von.slice(0, 7)).toBe(v.beginn.slice(0, 7));
       expect(z.bis == null ? null : z.bis.slice(0, 7)).toBe(v.ende == null ? null : v.ende.slice(0, 7));
     }
-  });
-
-  it.skipIf(!mitThemen)("has a programme year for every federal election", () => {
-    expect(d.wahlen.map((w) => w.jahr)).toEqual(d.themen.jahre);
   });
 });
