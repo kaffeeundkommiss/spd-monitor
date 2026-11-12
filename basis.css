@@ -64,3 +64,11 @@
 :root[data-theme="dark"].kk-b-gesch,:root[data-theme="dark"] .kk-b-gesch{--kk-akzent:#E4533F;--kk-akzent-hell:#3D2420;--kk-kopf:#24221D;--kk-markierung:#E4533F}
 :root[data-theme="dark"].kk-b-sipo,:root[data-theme="dark"] .kk-b-sipo{--kk-akzent:#A4AE7A;--kk-akzent-hell:#2F3324;--kk-kopf:#CBB18C;--kk-markierung:#A4AE7A}
 :root[data-theme="dark"].kk-b-poli,:root[data-theme="dark"] .kk-b-poli{--kk-akzent:#7C9BF0;--kk-akzent-hell:#1F2740;--kk-kopf:#22242A;--kk-markierung:#7C9BF0}
+
+/* Lesefluss: Zeilenlänge für Fließtext begrenzen. 36em ergibt etwa 70–75 Zeichen je Zeile (Startwert).
+   :where() hat keine Spezifität, seiteneigene max-width-Regeln gehen daher immer vor. */
+:where(p,dd){max-width:36em}
+:where(.srcs,.srclist)>li{max-width:40em}
+/* Kurze Übergänge für Links und Schaltflächen, abgeschaltet bei „Bewegung reduzieren“ */
+:where(a,button,summary){transition:color .15s ease,background-color .15s ease,border-color .15s ease,text-decoration-color .15s ease,opacity .15s ease}
+@media (prefers-reduced-motion:reduce){:where(a,button,summary){transition:none}}

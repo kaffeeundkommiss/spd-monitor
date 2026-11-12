@@ -35,7 +35,7 @@
   main{max-width:var(--max);margin:0 auto;padding:32px 24px 8px;display:flex;flex-direction:column;gap:24px}
   .karte{background:var(--paper);border:1px solid var(--line);border-radius:var(--r)}
   .einleitung h1{margin:0;font-size:28px;font-weight:700;letter-spacing:-.015em}
-  .einleitung p{margin:6px 0 0;color:var(--mute);max-width:72ch}
+  .einleitung p{margin:6px 0 0;color:var(--mute);max-width:36em}
 
   .kennzahlen{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
   .kennzahlen .karte{padding:18px 20px}
@@ -46,7 +46,7 @@
 
   .diagramm{padding:24px 28px;min-width:0}
   .diagramm h2{font-size:15px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--mute)}
-  .diagramm .sub{margin:6px 0 14px;font-size:13px;color:var(--mute);max-width:80ch}
+  .diagramm .sub{margin:6px 0 14px;font-size:13px;color:var(--mute);max-width:36em}
   .chart{position:relative;min-height:240px}
   .chart svg{display:block;width:100%;height:auto;overflow:visible}
   .chart text{font-family:var(--body);font-size:13px;fill:var(--mute)}
