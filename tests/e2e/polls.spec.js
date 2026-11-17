@@ -78,7 +78,7 @@ test.describe("Kopf und App-Icon", () => {
     await expect(page.locator('link[rel="apple-touch-icon"]')).toHaveAttribute("sizes", "180x180");
     await expect(page.locator('link[rel="apple-touch-icon-precomposed"]')).toHaveCount(1);
     await expect(page.locator('link[rel="icon"][type="image/svg+xml"]')).toHaveAttribute("href", "icons/favicon.svg");
-    await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute("content", "#23211C");
+    await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute("content", "#000000");
     await expect(page.locator('meta[name="apple-mobile-web-app-title"]')).toHaveAttribute("content", "SPD-Monitor");
   });
 

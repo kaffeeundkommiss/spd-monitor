@@ -1,15 +1,17 @@
 /* Bereichsnote Politik im Grundsystem Kaffee und Kommiss (basis.css): Blau, Umfragebalken im Kopfband, gelbes Signet.
+   Schwarz, Weiß und neutrale Grautöne ohne Farbstich (17.11.2026); Farbe tragen nur Daten, Akzent und Signet.
    Überschreibt Grundfarben, Kopf, Navigation, Fuß und Ecken von index.html und partei.html.
    Die Seite hat keinen Dunkelmodus, deshalb bleibt auch das Grundsystem hell. */
 :root.kk-b-poli { --kk-max: 1180px;
-  --bg: #FFFFFF; --paper: #FFFFFF; --ink: #23211C; --mute: #625B4E; --line: #D6D6D6; --rail: #ECECEC; --hair: #EEEEEE;
-  --keine-bg: #EEEEEE; --r: 2px;
+  --bg: #FFFFFF; --paper: #FFFFFF; --ink: #000000; --mute: #555555; --line: #D6D6D6; --rail: #ECECEC; --hair: #EEEEEE;
+  --keine-bg: #EEEEEE; --keine-fg: #555555; --r: 2px;
   /* weiß wie Startseite und Politik-Übersicht (10.11.2026) */
-  --kk-grund: #FFFFFF; --kk-papier: #FFFFFF; --kk-linie: #D6D6D6; --kk-schild: rgba(255,255,255,.96) }
+  --kk-grund: #FFFFFF; --kk-papier: #FFFFFF; --kk-tinte: #000000; --kk-grau: #555555; --kk-linie: #D6D6D6;
+  --kk-schild: rgba(255,255,255,.96); --kk-kopf: #FFFFFF }
 @media (prefers-color-scheme: dark) { :root.kk-b-poli:not([data-theme="light"]) {
-  --kk-grund: #FFFFFF; --kk-papier: #FFFFFF; --kk-tinte: #23211C; --kk-grau: #625B4E; --kk-linie: #D6D6D6;
-  --kk-schild: rgba(255,255,255,.96); --kk-dimm: transparent; --kk-leiste: #23211C;
-  --kk-akzent: #1E4FD8; --kk-akzent-hell: #E3EAFB; --kk-kopf: #ECEEF3; --kk-markierung: #7C9BF0; color-scheme: light } }
+  --kk-grund: #FFFFFF; --kk-papier: #FFFFFF; --kk-tinte: #000000; --kk-grau: #555555; --kk-linie: #D6D6D6;
+  --kk-schild: rgba(255,255,255,.96); --kk-dimm: transparent; --kk-leiste: #000000;
+  --kk-akzent: #1E4FD8; --kk-akzent-hell: #E3EAFB; --kk-kopf: #FFFFFF; --kk-markierung: #7C9BF0; color-scheme: light } }
 
 /* Kopf: Kopfband mit Umfragebalken statt dunklem Balken */
 .kk-b-poli header.top { background: linear-gradient(var(--kk-dimm), var(--kk-dimm)), var(--kk-muster), var(--kk-kopf);
