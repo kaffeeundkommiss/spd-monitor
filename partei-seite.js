@@ -172,7 +172,7 @@
     SPUREN.forEach((s, i) => txt(svg, {x: ml, y: spurY(i) - 5, class: 'stark'}, s));
     const vorsitz = balken.filter((b) => b.spur === 'Vorsitz');
     const farbe = (b) => b.spur === 'Rolle im Bund' ? rolleFarbe(b.status)
-      : b.spur === 'Vorsitz' ? (vorsitz.indexOf(b) % 2 ? '#4A505B' : 'var(--ink)') : '#F2B8BC';
+      : b.spur === 'Vorsitz' ? (vorsitz.indexOf(b) % 2 ? '#555555' : 'var(--ink)') : '#F2B8BC';
     const mfmt = (t) => new Date(t).toLocaleDateString('de-DE', {month: '2-digit', year: 'numeric', timeZone: 'UTC'});
     const unbeschriftet = new Set();   // Spuren mit mindestens einem Balken ohne Platz für sein Label
     balken.forEach((b) => {

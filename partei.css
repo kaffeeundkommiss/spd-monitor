@@ -4,7 +4,7 @@
   :root{
     --bg:#F5F6F2; --paper:#FFFFFF; --ink:#171A21; --mute:#5E6470; --line:#E3E5DE;
     --rail:#EEF0EA; --hair:#F0F1EC;
-    --ueber:#1E4FD8; --partei:#E3000F; --huerde:#7A1E14; --opp:#9AA0AA;
+    --ueber:#1E4FD8; --partei:#E3000F; --huerde:#7A1E14; --opp:#A0A0A0;
     --body:"IBM Plex Sans",system-ui,sans-serif;
     --mono:"IBM Plex Mono",ui-monospace,monospace;
     --max:1180px; --r:14px;
