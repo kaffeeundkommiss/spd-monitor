@@ -47,3 +47,6 @@
 .kk-b-poli footer .kk-satz { flex-basis: 100%; margin: 0; color: var(--mute) }
 .kk-b-poli footer .kk-satz a { color: var(--ink) }
 @media (max-width: 599px) { .kk-b-poli footer .wrap { padding-left: 16px; padding-right: 16px } }
+
+/* Monitorname ist auf der Umfrageseite die Hauptüberschrift (h1) */
+.marke h1.name { margin: 0 }

@@ -72,3 +72,9 @@
 /* Kurze Übergänge für Links und Schaltflächen, abgeschaltet bei „Bewegung reduzieren“ */
 :where(a,button,summary){transition:color .15s ease,background-color .15s ease,border-color .15s ease,text-decoration-color .15s ease,opacity .15s ease}
 @media (prefers-reduced-motion:reduce){:where(a,button,summary){transition:none}}
+
+/* Pfad zur Themenübersicht unter der Leiste */
+.kk-pfad{background:var(--kk-papier);border-bottom:1px solid var(--kk-linie);font:500 13px/1.4 var(--kk-text);color:var(--kk-grau)}
+.kk-pfad .kk-in{max-width:var(--kk-max);margin:0 auto;padding:7px max(16px,env(safe-area-inset-right,0px)) 7px max(16px,env(safe-area-inset-left,0px))}
+.kk-pfad a{color:var(--kk-tinte)}
+.kk-pfad [aria-current]{color:var(--kk-grau)}
