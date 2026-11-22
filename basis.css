@@ -45,6 +45,13 @@
 .kk-schild{display:inline-flex;align-items:center;gap:12px;background:var(--kk-schild);padding:10px 16px 10px 12px;border:1px solid var(--kk-linie);color:var(--kk-tinte);text-decoration:none}
 .kk-name{font:700 22px/1.05 var(--kk-titel);text-transform:uppercase;letter-spacing:.04em}
 .kk-unter{font:400 13px/1.35 var(--kk-text);color:var(--kk-grau)}
+/* Handy: Kopfband flacher, damit Hauptinhalt früher sichtbar ist (Arbeitspaket 3, 22.11.2026).
+   Gilt für beide Kopfbauarten (.kk-kopf und header.top). :root:root hebt die Spezifität über die
+   seiteneigenen Regeln in style.css/bereich.css, die nach basis.css geladen werden. Desktop unverändert. */
+@media (max-width:640px){
+  :root:root .kk-kopf .kk-in,:root:root .kk-kopf .wrap,:root:root header.top>.wrap{padding-top:12px;padding-bottom:12px;row-gap:8px}
+  :root:root .kk-schild,:root:root header.top .marke{padding:7px 12px 7px 10px}
+}
 
 /* Fuß */
 .kk-fuss{border-top:4px solid var(--kk-akzent);background:var(--kk-papier);color:var(--kk-grau);font:400 13px/1.5 var(--kk-text)}
