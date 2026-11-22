@@ -132,7 +132,7 @@ def bild_umfragen(data, pfad):
     c = Leinwand()
     c.kopf("Umfragewerte der SPD · Bund und Länder")
 
-    c.text(60, 168, ("Bundestagswahl · " + art).upper(), HALB(20), GRAU)
+    c.text(60, 168, ("Umfrage · Bundestagswahl · " + art).upper(), HALB(20), GRAU)
     num = "–" if wert is None else fmt(wert)
     c.text(56, 196, num, MONO(150), WEISS)
     nx = 56 + c.breite(num, MONO(150))
@@ -179,7 +179,8 @@ def bild_umfragen(data, pfad):
     linie, ab, bis = mittel_14(((bund.get("verlauf") or {}).get("rows") or []), stichtag=erstellt)
     gx0, gx1, gy0, gy1 = 640, 1140, 190, 500
     c.rect(gx0 - 20, gy0 - 50, gx1 + 20, gy1 + 30, "#1E222B", 16)
-    c.text(gx0, gy0 - 22, "14-Tage-Mittel, letzte 90 Tage", HALB(18), GRAU, "lm")
+    c.text(gx0, gy0 - 22, f"Umfragen, 14-Tage-Mittel in % · {dfmt(ab.isoformat())}–{dfmt(bis.isoformat())}",
+           HALB(18), GRAU, "lm")
     werte = [v for _, v in linie] + ([rw] if rw is not None else [])
     ymin = max(0, int(min(werte or [0])) - 2)
     ymax = max(ymin + 4, int(max(werte or [4])) + 2)
@@ -190,11 +191,13 @@ def bild_umfragen(data, pfad):
         c.text(gx0 - 8, Y(v), f"{v}", MONO(13), GRAU, "rm")
     if rw is not None:
         c.gestrichelt(gx0, gx1 - 60, Y(rw), GRAU, 2)
-        c.text(gx0 + 4, Y(rw) - 16, f"Wahl {ref.get('jahr', '')}: {fmt(rw)} %", HALB(15), GRAU, "lm")
+        c.text(gx0 + 4, Y(rw) - 16, f"Wahl {ref.get('jahr', '')} (amtlich): {fmt(rw)} %", HALB(15), GRAU, "lm")
     if len(linie) >= 2:
         c.line([(X(t), Y(v)) for t, v in linie], WEISS, 3.5)
         t, v = linie[-1]
         c.text(X(t) + 10, Y(v), fmt(v) + " %", MONO(20), WEISS, "lm")
+    else:
+        c.text((gx0 + gx1 - 60) / 2, gy1 - 40, "Zeitreihe derzeit nicht verfügbar", HALB(18), GRAU, "mm")
 
     c.fuss(f"Quelle: dawum.de (ODbL) · Stand {dfmt(stand) if stand else 'unbekannt'}")
     c.speichern(pfad)
@@ -205,7 +208,7 @@ def bild_partei(partei, pfad):
     c.kopf("Die SPD auf Bundesebene")
     wahlen = partei["wahlen"]
     erste, letzte = wahlen[0], wahlen[-1]
-    c.text(60, 168, f"BUNDESTAGSWAHLEN {erste['jahr']}–{letzte['jahr']} · ZWEITSTIMMEN", HALB(20), GRAU)
+    c.text(60, 168, f"BUNDESTAGSWAHLEN {erste['jahr']}–{letzte['jahr']} · AMTLICHE ERGEBNISSE IN %", HALB(20), GRAU)
     beste = max(wahlen, key=lambda w: w["ergebnis"])
     c.text(60, 214, f"Bestes Ergebnis {fmt(beste['ergebnis'])} % ({beste['jahr']})", HALB(26), WEISS)
     c.text(60, 254, f"Zuletzt {fmt(letzte['ergebnis'])} % ({letzte['jahr']})", HALB(26), "#FF8A80")

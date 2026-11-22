@@ -33,7 +33,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="basis.css">
 <link rel="stylesheet" href="partei.css?v=2">
-<link rel="stylesheet" href="bereich.css?v=2">
+<link rel="stylesheet" href="bereich.css?v=3">
 </head>
 <body>
 <div class="kk-leiste"><div class="kk-in">
@@ -73,8 +73,9 @@
   <section class="kennzahlen" id="kennzahlen" aria-label="Kennzahlen"></section>
 
   <section class="karte diagramm" id="bundestagswahlen" aria-labelledby="wahlen-titel" data-teilen="Bundestagswahlen" data-quelle="Bundeswahlleiterin">
+    <span class="art amtlich">Amtliche Ergebnisse</span>
     <h2 id="wahlen-titel">Bundestagswahlen</h2>
-    <p class="sub">Zweitstimmen in Prozent. Farbe: Rolle in der folgenden Wahlperiode.</p>
+    <p class="sub">Amtliche Endergebnisse, keine Umfragen: Zweitstimmenanteil in %. Farbe: Rolle in der folgenden Wahlperiode.</p>
     <div class="chart" id="chart-wahlen"></div>
     <div class="legende" id="legende-wahlen"></div>
     <p class="quelle" data-beleg="wahlen"></p>
@@ -82,8 +83,9 @@
 
 
   <section class="karte diagramm" id="zeitleiste" aria-labelledby="zeit-titel" data-teilen="Vorsitz, Programme, Rolle im Bund" data-quelle="bpb, Bundeswahlleiterin">
+    <span class="art chronik">Chronik</span>
     <h2 id="zeit-titel">Vorsitz, Programme, Rolle im Bund</h2>
-    <p class="sub">Senkrechte Linien: Bundestagswahlen.</p>
+    <p class="sub"><span id="zeit-zeitraum"></span>Senkrechte Linien: Bundestagswahlen.</p>
     <div class="chart" id="chart-zeit"></div>
     <div class="legende" id="legende-zeit"></div>
     <dl class="zeit-schluessel" id="schluessel-zeit" hidden></dl>
@@ -97,8 +99,9 @@
     </div>
     <div class="kennzahlen" id="vorsitz-kennzahlen"></div>
     <div class="karte diagramm" id="vorsitzende" data-teilen="Parteivorsitz" data-quelle="SPD, bpb">
+      <span class="art chronik">Chronik</span>
       <h2 id="vorsitz-chart-titel">Amtszeiten im Zeitstrahl</h2>
-      <p class="sub">Amtsdauer in Jahren je Amtszeit, Doppelspitzen als ein Eintrag. Rot: amtierend, bis heute gerechnet.</p>
+      <p class="sub"><span id="vorsitz-zeitraum"></span>Amtsdauer in Jahren je Amtszeit, Doppelspitzen als ein Eintrag. Rot: amtierend, bis heute gerechnet.</p>
       <div class="chart" id="chart-vorsitz"></div>
       <details class="vtab">
         <summary>Alle Amtszeiten als Tabelle</summary>
