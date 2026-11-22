@@ -15,6 +15,8 @@
       .map((b) => `<a href="${esc(b.url)}" rel="noopener">${esc(b.name)}</a>`);
     const hinweis = (d.belege_hinweis || {})[k];
     const teile = [links.length ? 'Quelle: ' + links.join(' · ') : '', hinweis ? esc(hinweis) : ''].filter(Boolean);
+    if(teile.length && d.stand && ['wahlen', 'zeitleiste', 'vorsitz'].includes(k))
+      teile.push('· Stand ' + dfmt(d.stand) + ' (zuletzt geprüft)');
     if(teile.length) p.innerHTML = teile.join(' '); else p.remove();
   });
 
@@ -66,11 +68,15 @@
   if(k && $('kennzahlen')){
     const regierung = d.wahlen.filter((w) => w.rolle === 'Regierung').length;
     document.getElementById('kennzahlen').innerHTML = [
-      ['Bestes Ergebnis', fmt(k.best.ergebnis) + ' %', 'Bundestagswahl ' + k.best.jahr, ''],
-      ['Letztes Ergebnis', fmt(k.letzte.ergebnis) + ' %', 'Bundestagswahl ' + k.letzte.jahr + ' · ' + k.letzte.rolle, ''],
+      ['Bestes Ergebnis', fmt(k.best.ergebnis) + ' %', 'Bundestagswahl ' + k.best.jahr + ' · amtlich', ''],
+      ['Letztes Ergebnis', fmt(k.letzte.ergebnis) + ' %', 'Bundestagswahl ' + k.letzte.jahr + ' · amtlich · danach ' + k.letzte.rolle, ''],
       ['In Regierung danach', regierung + ' von ' + k.anzahl, 'Wahlperioden nach den Wahlen ' + d.wahlen[0].jahr + '–' + k.letzte.jahr, ''],
     ].map(([l, n, s, c]) => `<div class="karte"><div class="lbl">${esc(l)}</div><div class="num ${c}">${esc(n)}</div><div class="sub">${esc(s)}</div></div>`).join('');
   }
+
+  // ---------- Zeitraum je Diagramm (Titel/Untertitel) ----------
+  if((d.wahlen || []).length && $('wahlen-titel'))
+    $('wahlen-titel').textContent = 'Bundestagswahlen ' + d.wahlen[0].jahr + '–' + d.wahlen[d.wahlen.length - 1].jahr;
 
   // ---------- Bundesvorsitzende: Kennzahlen und Tabelle ----------
   // Laufende Amtszeit zählt bis heute, deshalb einmal beim Laden berechnet.
@@ -104,6 +110,7 @@
     const mt = 4, mb = 24, zh = 24, H = mt + zeiten.length * zh + mb;
     svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
     const von = Date.UTC(Math.min(...zeiten.map((z) => new Date(z.a).getUTCFullYear())), 0, 1), bis = Math.max(...zeiten.map((z) => z.b));
+    if($('vorsitz-zeitraum')) $('vorsitz-zeitraum').textContent = 'Zeitraum ' + new Date(von).getUTCFullYear() + ' bis heute, x-Achse in Jahren. ';
     const X = (t) => ml + (t - von) / (bis - von) * (W - ml - mr);
     const tip = tooltip(host);
     const schritt = schmal ? 20 : 10;
@@ -127,7 +134,7 @@
   function wahlen(){
     const host = document.getElementById('chart-wahlen'); host.replaceChildren();
     const rows = d.wahlen, W = Math.max(280, host.clientWidth), H = 250, schmal = W < 420;
-    const ml = 30, mr = 6, mt = 22, mb = 26;
+    const ml = schmal ? 30 : 42, mr = 6, mt = 22, mb = 26;
     const yMax = Math.max(16, Math.ceil(Math.max(...rows.map((r) => r.ergebnis)) / 10) * 10);
     const band = (W - ml - mr) / rows.length, bw = Math.min(32, band * 0.62);
     const X = (i) => ml + i * band + band / 2, Y = (v) => H - mb - v / yMax * (H - mt - mb);
@@ -136,7 +143,7 @@
     const tip = tooltip(host);
     for(let v = 0; v <= yMax; v += 10){
       el('line', {x1: ml, x2: W - mr, y1: Y(v), y2: Y(v), stroke: 'var(--line)'}, svg);
-      txt(svg, {x: ml - 6, y: Y(v), dy: '0.32em', 'text-anchor': 'end'}, v);
+      txt(svg, {x: ml - 6, y: Y(v), dy: '0.32em', 'text-anchor': 'end'}, schmal ? v : v + ' %');
     }
     rows.forEach((r, i) => {
       const b = el('rect', {x: X(i) - bw / 2, y: Y(r.ergebnis), width: bw, height: Y(0) - Y(r.ergebnis),
@@ -156,6 +163,7 @@
     const host = document.getElementById('chart-zeit'); host.replaceChildren();
     const jetzt = new Date();
     const von = Date.UTC(1998, 0, 1), bis = Date.UTC(jetzt.getUTCFullYear(), jetzt.getUTCMonth(), jetzt.getUTCDate());
+    if($('zeit-zeitraum')) $('zeit-zeitraum').textContent = 'Zeitraum ' + new Date(von).getUTCFullYear() + ' bis heute. ';
     const balken = PU.zeitBalken(d.zeitleiste, von, bis);
     const W = Math.max(280, host.clientWidth), ml = 4, mr = 4, mt = 4, mb = 24, lh = 26, kopf = 16;
     const H = mt + SPUREN.length * (lh + kopf + 4) + mb;

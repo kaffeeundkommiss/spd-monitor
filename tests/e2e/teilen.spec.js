@@ -65,7 +65,7 @@ test.describe("Belege und Einordnung", () => {
 
   test("ohne Trendwerte gibt es keine leere Trend-Spalte", async ({ page }) => {
     await laden(page);
-    await expect(page.locator("#gelaufen-tabelle th")).not.toContainText(["Letzter Trend"]);
+    await expect(page.locator("#gelaufen-tabelle th")).not.toContainText(["Letzter Wahltrend"]);
   });
 
   test("ein Wert aus nur einer Umfrage ist als wenig belastbar markiert, auch am Handy", async ({ page }) => {

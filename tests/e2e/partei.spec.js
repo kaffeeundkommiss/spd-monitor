@@ -74,3 +74,16 @@ test("Zeitleiste am Desktop: Schlüssel nur für Spuren, deren Balken zu schmal 
   const schl = page.locator("#schluessel-zeit");
   await expect(schl).not.toContainText("Hamburger");  // passt beschriftet in den Balken
 });
+
+test("Diagramme der Parteiseite: Kennzeichen, Einheit, Zeitraum und Stand", async ({ page }) => {
+  await page.goto("/partei.html");
+  await expect(page.locator("#chart-wahlen rect").first()).toBeVisible();
+  await expect(page.locator("#bundestagswahlen .art")).toHaveText("Amtliche Ergebnisse");
+  await expect(page.locator("#wahlen-titel")).toHaveText(/^Bundestagswahlen \d{4}–\d{4}$/);
+  await expect(page.locator("#chart-wahlen text", { hasText: /^0 %$/ })).toHaveCount(1);
+  await expect(page.locator("#bundestagswahlen .quelle")).toContainText("Stand");
+  await expect(page.locator("#zeitleiste .art")).toHaveText("Chronik");
+  await expect(page.locator("#zeit-zeitraum")).toContainText("bis heute");
+  await expect(page.locator("#vorsitzende .art")).toHaveText("Chronik");
+  await expect(page.locator("#vorsitz-zeitraum")).toContainText("bis heute");
+});

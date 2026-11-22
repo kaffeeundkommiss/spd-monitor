@@ -50,3 +50,12 @@
 
 /* Monitorname ist auf der Umfrageseite die Hauptüberschrift (h1) */
 .marke h1.name { margin: 0 }
+
+/* Kennzeichen über Diagrammen (22.11.2026): Umfrage, amtliches Ergebnis oder Chronik.
+   Als Text, nicht nur als Farbe, damit es auch in Graustufen und auf Screenshots eindeutig ist.
+   Umfragen gestrichelt (Schätzung), amtliche Ergebnisse vollflächig (festgestellt). */
+.art { display: inline-block; margin: 0 0 8px; padding: 3px 7px; font: 600 11px/1.3 var(--mono, monospace);
+  letter-spacing: .08em; text-transform: uppercase; border: 1px solid; border-radius: 0; white-space: nowrap }
+.art.umfrage { color: var(--kk-akzent, #1E4FD8); border-style: dashed; background: #FFFFFF }
+.art.amtlich { color: #FFFFFF; background: #000000; border-color: #000000 }
+.art.chronik { color: #555555; border-color: #D6D6D6; background: #FFFFFF }
