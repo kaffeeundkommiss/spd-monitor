@@ -1,5 +1,5 @@
 {
-  "erstellt": "2026-11-16T09:21+02:00",
+  "erstellt": "2026-11-23T09:19+02:00",
   "partei": "SPD",
   "ebenen": [
     {
@@ -23,37 +23,47 @@
       },
       "wahlergebnis": null,
       "wahltrend": {
-        "wert": 13.4,
-        "delta": -0.2,
-        "stand": "2026-11-14"
+        "wert": 13.8,
+        "delta": 0.4,
+        "stand": "2026-11-21"
       },
       "umfragen": {
-        "stand": "2026-11-07T15:19:44+01:00",
+        "stand": "2026-11-21T18:49:22+01:00",
         "rows": [
           {
             "institut": "INSA",
-            "datum": "2026-11-07",
+            "datum": "2026-11-21",
+            "wert": 14.0
+          },
+          {
+            "institut": "Verian (Emnid)",
+            "datum": "2026-11-20",
+            "wert": 14.0
+          },
+          {
+            "institut": "Forsa",
+            "datum": "2026-11-17",
+            "wert": 13.0
+          },
+          {
+            "institut": "YouGov",
+            "datum": "2026-11-17",
+            "wert": 15.0
+          },
+          {
+            "institut": "Forschungsgruppe Wahlen",
+            "datum": "2026-11-13",
+            "wert": 13.0
+          },
+          {
+            "institut": "Ipsos",
+            "datum": "2026-11-11",
             "wert": 14.0
           },
           {
             "institut": "Infratest dimap",
             "datum": "2026-11-05",
             "wert": 13.0
-          },
-          {
-            "institut": "Forsa",
-            "datum": "2026-11-03",
-            "wert": 14.0
-          },
-          {
-            "institut": "Verian (Emnid)",
-            "datum": "2026-10-23",
-            "wert": 13.0
-          },
-          {
-            "institut": "Forschungsgruppe Wahlen",
-            "datum": "2026-10-23",
-            "wert": 14.0
           },
           {
             "institut": "Allensbach",
@@ -66,19 +76,9 @@
             "wert": 15.0
           },
           {
-            "institut": "YouGov",
-            "datum": "2026-10-20",
-            "wert": 14.0
-          },
-          {
             "institut": "GMS",
             "datum": "2026-10-19",
             "wert": 12.0
-          },
-          {
-            "institut": "Ipsos",
-            "datum": "2026-10-08",
-            "wert": 13.0
           }
         ]
       },
@@ -609,7 +609,7 @@
         "stand": null
       },
       "umfragen": {
-        "stand": "2026-11-07T15:19:44+01:00",
+        "stand": "2026-11-21T18:49:22+01:00",
         "rows": [
           {
             "institut": "Infratest dimap",
@@ -644,7 +644,7 @@
         "stand": null
       },
       "umfragen": {
-        "stand": "2026-11-07T15:19:44+01:00",
+        "stand": "2026-11-21T18:49:22+01:00",
         "rows": [
           {
             "institut": "INSA",
@@ -679,8 +679,13 @@
         "stand": null
       },
       "umfragen": {
-        "stand": "2026-11-07T15:19:44+01:00",
+        "stand": "2026-11-21T18:49:22+01:00",
         "rows": [
+          {
+            "institut": "Infratest dimap",
+            "datum": "2026-11-15",
+            "wert": 16.0
+          },
           {
             "institut": "INSA",
             "datum": "2026-10-16",
@@ -690,11 +695,6 @@
             "institut": "Forsa",
             "datum": "2026-09-23",
             "wert": 14.0
-          },
-          {
-            "institut": "Infratest dimap",
-            "datum": "2026-06-28",
-            "wert": 17.0
           }
         ]
       }
@@ -724,7 +724,7 @@
         "stand": null
       },
       "umfragen": {
-        "stand": "2026-11-07T15:19:44+01:00",
+        "stand": "2026-11-21T18:49:22+01:00",
         "rows": [
           {
             "institut": "INSA",
@@ -759,8 +759,13 @@
         "stand": null
       },
       "umfragen": {
-        "stand": "2026-11-07T15:19:44+01:00",
+        "stand": "2026-11-21T18:49:22+01:00",
         "rows": [
+          {
+            "institut": "Infratest dimap",
+            "datum": "2026-11-19",
+            "wert": 27.0
+          },
           {
             "institut": "INSA",
             "datum": "2026-09-11",
