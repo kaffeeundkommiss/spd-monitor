@@ -3,7 +3,7 @@ import { test, expect } from "@playwright/test";
 // partei.json ist redaktionell gepflegt und ändert sich selten: die Seite wird mit der
 // echten Datei getestet, nicht mit einem Fixture.
 test.beforeEach(async ({ page }) => {
-  await page.route("**/fonts.googleapis.com/**", (r) => r.abort());
+  await page.route("**/kaffeeundkommiss.github.io/schriften/**", (r) => r.abort());
 });
 
 test("Parteiseite zeichnet Kennzahlen und alle Diagramme", async ({ page }) => {
